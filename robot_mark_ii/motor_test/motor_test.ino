@@ -21,19 +21,15 @@
 // Base Arduino includes
 #include <Arduino.h>
 
-// Teensy library includes
-#include <Encoder.h>
-
 // Project includes
 #include <ButtonExecutor.h>
 #include <SerialDebug.h>
-//#include "../../ard_lib/Timer.h"
 #include <PololuQik2s9v1MotorManager.h>
 
 // Pin Definitions - Defines all of the pins used
 #define POLOLU_QIK_TX_PIN       0 // tx pin to communicate with Pololu qik
 #define POLOLU_QIK_RX_PIN       1 // rx pin to communicate with Pololu qik
-#define POLOLU_QIK_RESET_PIN    3 // reset pin to communicate with Pololu qik
+#define POLOLU_QIK_RESET_PIN    3 // reset pin of the Pololu qik
 #define LED_PIN                13 // pin to flash an led (13 is built-in)
 #define ENCODER_RT_PHASE_B_PIN 31 // pin to detect right encoder phase b signal
 #define ENCODER_RT_PHASE_A_PIN 32 // pin to detect right encoder phase a signal
