@@ -20,6 +20,7 @@
 
 // Base Arduino includes
 #include <Arduino.h>
+#include <inttypes.h>
 
 // Project includes
 #include <ButtonExecutor.h>
@@ -27,15 +28,15 @@
 #include <PololuQik2s9v1MotorManager.h>
 
 // Pin Definitions - Defines all of the pins used
-#define POLOLU_QIK_TX_PIN       0 // tx pin to communicate with Pololu qik
-#define POLOLU_QIK_RX_PIN       1 // rx pin to communicate with Pololu qik
-#define POLOLU_QIK_RESET_PIN    3 // reset pin of the Pololu qik
-#define LED_PIN                13 // pin to flash an led (13 is built-in)
-#define ENCODER_RT_PHASE_B_PIN 31 // pin to detect right encoder phase b signal
-#define ENCODER_RT_PHASE_A_PIN 32 // pin to detect right encoder phase a signal
-#define BUTTON_PIN             33 // pin to detect the start/stop button
-#define ENCODER_LT_PHASE_B_PIN 34 // pin to detect left encoder phase b signal
-#define ENCODER_LT_PHASE_A_PIN 35 // pin to detect left encoder phase a signal
+const uint8_t POLOLU_QIK_TX_PIN      =  0; // tx Pololu qik
+const uint8_t POLOLU_QIK_RX_PIN      =  1; // rx Pololu qik
+const uint8_t POLOLU_QIK_RESET_PIN   =  3; // reset Pololu qik
+const uint8_t LED_PIN                = 13; // led (13 is built-in)
+const uint8_t ENCODER_RT_PHASE_B_PIN = 31; // right encoder phase b signal
+const uint8_t ENCODER_RT_PHASE_A_PIN = 32; // right encoder phase a signal
+const uint8_t BUTTON_PIN             = 33; // start/stop button
+const uint8_t ENCODER_LT_PHASE_B_PIN = 34; // left encoder phase b signal
+const uint8_t ENCODER_LT_PHASE_A_PIN = 35; // left encoder phase a signal
 
 // Data structure used to store state between callback calls.
 struct CallbackContext {
@@ -82,10 +83,6 @@ void loop() {
 // It will be called just once when the executor is setup.
 void setupCallback() {
 	SerialDebugger.println("Sketch setup");
-
-  // Intialize the callback state
-  _callbackContext.direction = false;
-  _callbackContext.ledState = LOW;
 }
 
 // This is where the sketch should set initial state before execution.  It will
@@ -93,12 +90,16 @@ void setupCallback() {
 // execution is started.
 void startCallback() {
 
+  // Intialize the callback state
+  _callbackContext.direction = false;
+  _callbackContext.ledState = LOW;
+
   // Initial callbacks to start
   checkEncoderValues((void*)&_callbackContext); // Initial read before starting motors
   applyMotorState((void*)&_callbackContext); // Start the motors!
 
   // Then make these callbacks on timed schedule
-  buttonExecutor.callbackEvery(1000, applyMotorState, (void*)&_callbackContext);
+  buttonExecutor.callbackEvery(30000, applyMotorState, (void*)&_callbackContext);
   buttonExecutor.callbackEvery(500, applyLEDState, (void*)&_callbackContext);
   buttonExecutor.callbackEvery(10, checkEncoderValues, (void*)&_callbackContext);
 }
@@ -115,6 +116,9 @@ void stopCallback() {
   // Stop the motors
   motorManager->setMotorSpeeds(0,0);
 
+  // final value
+  checkEncoderValues((void*)&_callbackContext); // Initial read before starting motors
+  
   // Reset the encoders
   motorManager->readAndResetEncoder(LEFT_MOTOR);
   motorManager->readAndResetEncoder(RIGHT_MOTOR);
@@ -128,9 +132,9 @@ void abortExecution() {
 void applyMotorState(void* context) {
   // change direction
   bool direction = !((CallbackContext*)context)->direction;
-  int motorSpeed = (direction ? MAX_MOTORSPEED : -MAX_MOTORSPEED)/2;
-  //motorManager->setMotorSpeed(RIGHT_MOTOR, motorSpeed);
-  motorManager->setMotorSpeeds(motorSpeed, -motorSpeed);
+  double motorSpeed = (direction ? .25 : .25);
+  //motorManager->setMotorSpeed(LEFT_MOTOR, motorSpeed);
+  motorManager->setMotorSpeeds(-motorSpeed, motorSpeed);
   
   // store state for next callback
   ((CallbackContext*)context)->direction = direction;

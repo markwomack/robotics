@@ -27,15 +27,14 @@
   qik->init(9600);
 }
 
-int mapSpeed(int input) 
+int mapSpeed(double input) 
 {
-  input = max(input, -MAX_MOTORSPEED);
-  input = min(input, MAX_MOTORSPEED);
-  input = map(input, -MAX_MOTORSPEED, MAX_MOTORSPEED, -127, 127);
-  return input;
+  // Pin to value between -1 and 1, then multiply by 127
+  // for expected qik value.
+  return (int)(min(max(input, -1.0), 1.0) * 127);
 }
 
-void PololuQik2s9v1MotorManager::setMotorSpeed(uint8_t motor, int speed)
+void PololuQik2s9v1MotorManager::setMotorSpeed(uint8_t motor, double speed)
 {
   if (motor == LEFT_MOTOR) {
     qik->setM0Speed(mapSpeed(speed));
@@ -44,7 +43,7 @@ void PololuQik2s9v1MotorManager::setMotorSpeed(uint8_t motor, int speed)
   }
 }
 
-void PololuQik2s9v1MotorManager::setMotorSpeeds(int speedLeft, int speedRight)
+void PololuQik2s9v1MotorManager::setMotorSpeeds(double speedLeft, double speedRight)
 {
   qik->setSpeeds(mapSpeed(speedLeft), mapSpeed(speedRight));
 }

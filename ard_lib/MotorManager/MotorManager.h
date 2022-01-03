@@ -33,15 +33,43 @@ class MotorManager
 {
 
 public:
-  virtual void setMotorSpeed(uint8_t motor, int speed) = 0;
-  virtual void setMotorSpeeds(int speedLeft, int speedRight) = 0;
+  /*
+   * Sets the speed of the given motor. Speed is expected to be a 
+   * value between -1 and 1.
+   */
+
+  virtual void setMotorSpeed(uint8_t motor, double speed) = 0;
+
+  /*
+   * Sets the speed of the motors. Speeds are expected to be a 
+   * value between -1 and 1.
+   */
+
+  virtual void setMotorSpeeds(double speedLeft, double speedRight) = 0;
+  /*
+   * Assigns the pins that have the quadrature phase signals.
+   */
+
   void setupEncoders(
     uint8_t leftEncoderPhaseAPin, uint8_t leftEncoderPhaseBPin,
     uint8_t rightEncoderPhaseAPin, uint8_t rightEncoderPhaseBPin);
+  /*
+   * Reads the value of the given motors encoder.
+   */
+
   int32_t readEncoder(uint8_t motor);
+  /*
+   * Reads the value of the given motors encoder and then resets the
+   * value to zero.
+   */
+
   int32_t readAndResetEncoder(uint8_t motor);
+
+  /*
+   * Sets the value of the given motors encoder to the given value.
+   */
   void writeEncoder(uint8_t motor, int32_t value);
-  
+
 protected:
   Encoder* _leftEncoder;
   Encoder* _rightEncoder;
