@@ -29,7 +29,6 @@ class PrintCascade
 	PrintCascade();
     PrintCascade& print(char);
     PrintCascade& print(const char[]);
-    PrintCascade& print(uint8_t);
     PrintCascade& print(int);
     PrintCascade& print(unsigned int);
     PrintCascade& print(long);
@@ -39,7 +38,6 @@ class PrintCascade
     PrintCascade& println(void );
     PrintCascade& println(char);
     PrintCascade& println(const char[]);
-    PrintCascade& println(uint8_t);
     PrintCascade& println(int);
     PrintCascade& println(unsigned int);
     PrintCascade& println(long);

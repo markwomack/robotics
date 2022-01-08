@@ -32,12 +32,6 @@ PrintCascade::PrintCascade(){
   printer=0;
 }
 
-PrintCascade& PrintCascade::print(uint8_t b)
-{
-  printer->write(b);
-  return *this;
-}
-
 PrintCascade& PrintCascade::print(char c)
 {
   printer->print(c);
@@ -103,12 +97,6 @@ PrintCascade& PrintCascade::println(char c)
 PrintCascade& PrintCascade::println(const char c[])
 {
   printer->println(c);
-  return *this;
-}
-
-PrintCascade& PrintCascade::println(uint8_t b)
-{
-  printer->println(b);
   return *this;
 }
 
