@@ -27,8 +27,6 @@
 #define LEFT_MOTOR 1
 #define RIGHT_MOTOR 2
 
-#define MAX_MOTORSPEED 1000
-
 class MotorManager
 {
 
