@@ -30,13 +30,13 @@
 #include <SerialDebug.h>
 #include <VL6180I2CMux.h>
 
-const uint8_t REAR_MUX_PIN0     = 10; // rear_sensor mux selector pin 0
-const uint8_t REAR_MUX_PIN1     = 11; // rear_sensor mux selector pin 1
-const uint8_t REAR_MUX_PIN2     = 12; // rear_sensor mux selector pin 2
+const uint8_t REAR_MUX_PIN0     = 16; // rear_sensor mux selector pin 0
+const uint8_t REAR_MUX_PIN1     = 15; // rear_sensor mux selector pin 1
+const uint8_t REAR_MUX_PIN2     = 14; // rear_sensor mux selector pin 2
 const uint8_t LED_PIN           = 13; // led (13 is built-in)
-const uint8_t FRONT_MUX_PIN2    = 14; // front sensor mux selector pin 2
-const uint8_t FRONT_MUX_PIN1    = 15; // front sensor mux selector pin 1
-const uint8_t FRONT_MUX_PIN0    = 16; // front sensor mux selector pin 0
+const uint8_t FRONT_MUX_PIN2    = 12; // front sensor mux selector pin 2
+const uint8_t FRONT_MUX_PIN1    = 11; // front sensor mux selector pin 1
+const uint8_t FRONT_MUX_PIN0    = 10; // front sensor mux selector pin 0
 const uint8_t BUTTON_PIN        = 33; // start/stop button
 
 // Create the button executor that will start/stop execution when button
@@ -44,10 +44,10 @@ const uint8_t BUTTON_PIN        = 33; // start/stop button
 ButtonExecutor buttonExecutor;
 
 VL6180I2CMux* frontSensorMux;
-int numFrontMuxSensor = 5;
+int numFrontMuxSensor = 4;
 
 VL6180I2CMux* rearSensorMux;
-int numRearMuxSensor = 4;
+int numRearMuxSensor = 5;
 
 void setup() {
   SerialDebugger.begin(9600);
@@ -60,11 +60,11 @@ void setup() {
 
   pinMode(LED_PIN, OUTPUT);
 
-  frontSensorMux = new VL6180I2CMux(&Wire, 0x29, numFrontMuxSensor,
+  frontSensorMux = new VL6180I2CMux(&Wire1, 0x29, numFrontMuxSensor,
     FRONT_MUX_PIN0,FRONT_MUX_PIN1,FRONT_MUX_PIN2);
   frontSensorMux->initializeSensors();
   
-  rearSensorMux = new VL6180I2CMux(&Wire1, 0x29, numRearMuxSensor,
+  rearSensorMux = new VL6180I2CMux(&Wire, 0x29, numRearMuxSensor,
     REAR_MUX_PIN0,REAR_MUX_PIN1,REAR_MUX_PIN2);
   rearSensorMux->initializeSensors();
 
