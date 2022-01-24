@@ -99,7 +99,7 @@ void startCallback() {
   applyMotorState((void*)&_callbackContext); // Start the motors!
 
   // Then make these callbacks on timed schedule
-  buttonExecutor.callbackEvery(30000, applyMotorState, (void*)&_callbackContext);
+  buttonExecutor.callbackEvery(5000, applyMotorState, (void*)&_callbackContext);
   buttonExecutor.callbackEvery(500, applyLEDState, (void*)&_callbackContext);
   buttonExecutor.callbackEvery(10, checkEncoderValues, (void*)&_callbackContext);
 }
@@ -132,9 +132,9 @@ void abortExecution() {
 void applyMotorState(void* context) {
   // change direction
   bool direction = !((CallbackContext*)context)->direction;
-  double motorSpeed = (direction ? .25 : .25);
+  double motorSpeed = (direction ? .75 : .75);
   //motorManager->setMotorSpeed(LEFT_MOTOR, motorSpeed);
-  motorManager->setMotorSpeeds(-motorSpeed, motorSpeed);
+  motorManager->setMotorSpeeds(motorSpeed, motorSpeed);
   
   // store state for next callback
   ((CallbackContext*)context)->direction = direction;
