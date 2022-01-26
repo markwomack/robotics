@@ -66,9 +66,8 @@ void setupCallback() {
   pinMode(LED_PIN, OUTPUT);
   ledContext.ledState = LOW;
 
-  // Create and initialize the behavior
+  // Create the behavior
   behavior = createBehavior();
-  behavior->initialize();
 }
 
 // This is where the sketch should set initial state before execution.  It will

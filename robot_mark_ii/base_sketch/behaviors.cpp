@@ -140,5 +140,6 @@ class TableTopBehavior : public BehaviorWithState {
 // the behavior you want to use.
 Behavior* createBehavior() {
   Behavior* behavior = new TableTopBehavior();
+  behavior->initialize();
   return behavior;
 }
