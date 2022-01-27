@@ -46,20 +46,10 @@ void runBehavior(void* context) {
   behavior->doBehavior();
 }
 
-class BehaviorWithState : public Behavior {
-  public:
-    BehaviorWithState() { }
-    
-    virtual void initialize();
-    virtual void start(ButtonExecutor* buttonExecutor);
-    virtual void doBehavior();
-    virtual void stop();
-
+class TableTopBehavior : public Behavior {
   protected:
     TableTopState _state;
-};
-
-class TableTopBehavior : public BehaviorWithState {
+    
   public:
   TableTopBehavior() { _state = STOPPED; }
   
