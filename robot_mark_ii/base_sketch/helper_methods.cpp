@@ -24,10 +24,12 @@
 // My includes
 #include <SerialDebug.h>
 #include <PololuQik2s9v1MotorManager.h>
+#include <MotorController.h>
 
 // Local includes
 #include "helper_methods.h"
 #include "pin_assignments.h"
+#include "robot_constants.h"
 
 void initializeMotorsAndEncoders(CallbackContext* context) {
   // Setup the motor manager
@@ -35,12 +37,14 @@ void initializeMotorsAndEncoders(CallbackContext* context) {
     new PololuQik2s9v1MotorManager(
       POLOLU_QIK_TX_PIN, POLOLU_QIK_RX_PIN, POLOLU_QIK_RESET_PIN);
 
-  SerialDebugger.print("initializeMotorsAndEncoders ").println((long)context->motorManager);
-
   // Setup encoders on the motor manager
   context->motorManager->setupEncoders(
     ENCODER_L_PHASE_A_PIN, ENCODER_L_PHASE_B_PIN,
     ENCODER_R_PHASE_A_PIN, ENCODER_R_PHASE_B_PIN);
+
+ // Setup the motor controller
+ context->motorController = new MotorController(context->motorManager,
+    KP, KI, KD, 50, RADIANS_PER_TICK, MAX_RADIANS_PER_SECOND);
 }
 
 void initializeDistanceSensors(CallbackContext* context) {
@@ -91,45 +95,16 @@ void initializeSurfaceSensors(CallbackContext* context) {
     NUM_REAR_SURFACE_SENSORS);
 }
 
-void resetEncodersAndVelocities(CallbackContext* context) {  
+void resetEncoders(CallbackContext* context) {  
   // Reset the encoders
   context->motorManager->readAndResetEncoder(LEFT_MOTOR);
   context->motorManager->readAndResetEncoder(RIGHT_MOTOR);
+}
 
-  for (int i = 0; i < NUM_VEL_SAMPLES; i++) {
-    context->vel_samples_left[i] = 0.0;
-    context->vel_samples_right[i] = 0.0;
-  }
-  context->samples_index = 0;
-  context->last_encoder_left = 0;
-  context->last_encoder_right = 0;
-  context->last_encoder_read_time = millis();
-}/*
- * Reads the current values of the motor encoders and uses
- * the difference with the previous value from the encoders
- * to calculate the angular velocity of each wheel.
- * Velocity is calculated as radians/second.
- */
-void readEncoders(void* context) {
+void adjustMotorSpeeds(void* context) {
   CallbackContext* callbackContext = ((CallbackContext*)context);
 
-  uint8_t index = callbackContext->samples_index;
-  unsigned long current_time = millis();
-  long encoder_left = callbackContext->motorManager->readEncoder(LEFT_MOTOR);
-  long encoder_right = callbackContext->motorManager->readEncoder(RIGHT_MOTOR);
-  
-  // TODO(mwomack): handle overflow/reset to 0
-  double diff_l = static_cast<double>(encoder_left - callbackContext->last_encoder_left);
-  double diff_r = static_cast<double>(encoder_right - callbackContext->last_encoder_right);
-  double diff_t = (current_time - callbackContext->last_encoder_read_time)/1000.0;
-
-  callbackContext->vel_samples_left[index] = (diff_l*RADIANS_PER_TICK)/diff_t;
-  callbackContext->vel_samples_right[index] = (diff_r*RADIANS_PER_TICK)/diff_t;
-
-  callbackContext->samples_index = (index + 1) % NUM_VEL_SAMPLES;
-  callbackContext->last_encoder_left = encoder_left;
-  callbackContext->last_encoder_right = encoder_right;
-  callbackContext->last_encoder_read_time = current_time;
+  callbackContext->motorController->adjustSpeeds();
 }
 
 void readEdgeSensors(void* context) {
@@ -210,50 +185,6 @@ void calibrateSurfaceSensors(CallbackContext* context) {
   digitalWrite(LED_PIN, LOW); // turn off led to indicate calibration done.
 }
 
-double getSampledVelocity(uint8_t motor, CallbackContext* context) {
-  double totalOfSamples = 0;
-  if (motor == LEFT_MOTOR) {
-    for (int x = 0; x < NUM_VEL_SAMPLES; x++) {
-      totalOfSamples += context->vel_samples_left[x];
-    }
-  } else {
-    for (int x = 0; x < NUM_VEL_SAMPLES; x++) {
-      totalOfSamples += context->vel_samples_right[x];
-    }
-  }
-  return totalOfSamples / NUM_VEL_SAMPLES;
-}
-
-void printVelocities(void* context) {
-  CallbackContext* callbackContext = ((CallbackContext*)context);
-  SerialDebugger.print("Left :").println(getSampledVelocity(LEFT_MOTOR, callbackContext));
-  SerialDebugger.print("Right:").println(getSampledVelocity(RIGHT_MOTOR, callbackContext));
-}
-
 void stopMotors(CallbackContext* context) {
   context->motorManager->setMotorSpeeds(0, 0);
-}
-
-void goForward(CallbackContext* context) {
-  context->motorManager->setMotorSpeeds(CRUISE_SPEED, CRUISE_SPEED);
-}
-
-void goReverse(CallbackContext* context) {
-  context->motorManager->setMotorSpeeds(-CRUISE_SPEED, -CRUISE_SPEED);
-}
-
-void turnForwardLeft(CallbackContext* context) {
-  context->motorManager->setMotorSpeeds(TURN_SPEED, 0);
-}
-
-void turnReverseLeft(CallbackContext* context) {
-  context->motorManager->setMotorSpeeds(0, -TURN_SPEED);
-}
-
-void turnForwardRight(CallbackContext* context) {
-  context->motorManager->setMotorSpeeds(0, TURN_SPEED);
-}
-
-void turnReverseRight(CallbackContext* context) {
-  context->motorManager->setMotorSpeeds(-TURN_SPEED, 0);
 }

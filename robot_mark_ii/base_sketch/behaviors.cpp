@@ -18,15 +18,22 @@
  *      MA 02110-1301, USA.
  */
 
+// Third party includes
+#include <PID_v1.h>
+
+// My includes
+#include <SerialDebug.h>
+#include <MotorController.h>
+
 // Local includes
 #include "behaviors.h"
 #include "robot_constants.h"
 #include "helper_methods.h"
 
-enum State {
+enum TableTopState {
   STOPPED,
-  FORWARD,
-  REVERSE,
+  GOFORWARD,
+  GOREVERSE,
   TURN_F_LEFT,
   TURN_F_RIGHT,
   TURN_R_LEFT,
@@ -49,7 +56,7 @@ class BehaviorWithState : public Behavior {
     virtual void stop();
 
   protected:
-    State _state;
+    TableTopState _state;
 };
 
 class TableTopBehavior : public BehaviorWithState {
@@ -63,63 +70,70 @@ class TableTopBehavior : public BehaviorWithState {
 
   void start(ButtonExecutor* buttonExecutor) {
 
-    // Reset the encoder and velocities in the callback context
-    resetEncodersAndVelocities(&_context);
-    readEncoders(&_context);
+    // Start the motor controller
+    _context.motorController->start();
 
     // Register the methods used when running this behavior
     buttonExecutor->callbackEvery(50, readEdgeSensors, (void*)&_context);
+    buttonExecutor->callbackEvery(50, adjustMotorSpeeds, (void*)&_context);
     buttonExecutor->callbackEvery(100, runBehavior, (void*)this);
   }
-
+  
   // Defines the behavior of the robot, a set of states that are cycled
   // through as sensor data is interpreted.
   void doBehavior() {
     switch (_state) {
       case STOPPED:
-        _state = FORWARD;
-        goForward(&_context);
+        goForward();
         break;
-      case FORWARD:
+      case GOFORWARD:
         if (_context.edgeSensorValues[FL_EDGE] > EDGE_THRESHOLD) {
-          _state = TURN_F_RIGHT;
-          turnForwardRight(&_context);
+          if (_context.edgeSensorValues[FR_EDGE] > EDGE_THRESHOLD) {
+            goReverse();
+          } else {
+            turnForwardRight();
+          }
         } else if (_context.edgeSensorValues[FR_EDGE] > EDGE_THRESHOLD) {
-          _state = TURN_F_LEFT;
-          turnForwardLeft(&_context);
+          if (_context.edgeSensorValues[FL_EDGE] > EDGE_THRESHOLD) {
+            goReverse();
+          } else {
+            turnForwardLeft();
+          }
         }
         break;
-      case REVERSE:
+      case GOREVERSE:
         if (_context.edgeSensorValues[RL_EDGE] > EDGE_THRESHOLD) {
-          _state = TURN_R_LEFT;
-          turnReverseLeft(&_context);
+          if (_context.edgeSensorValues[RR_EDGE] > EDGE_THRESHOLD) {
+            goForward();
+          } else {
+            turnReverseLeft();
+          }
         } else if (_context.edgeSensorValues[RR_EDGE] > EDGE_THRESHOLD) {
-          _state = TURN_R_RIGHT;
-          turnReverseRight(&_context);
+          if (_context.edgeSensorValues[RL_EDGE] > EDGE_THRESHOLD) {
+            goForward();
+          } else {
+            turnReverseRight();
+          }
         }
         break;
       case TURN_F_LEFT:
         if (_context.edgeSensorValues[FL_EDGE] > EDGE_THRESHOLD) {
-          _state = REVERSE;
-          goReverse(&_context);
+          goReverse();
         }
         break;
       case TURN_F_RIGHT:
         if (_context.edgeSensorValues[FR_EDGE] > EDGE_THRESHOLD) {
-          _state = REVERSE;
-          goReverse(&_context);
+          goReverse();
         }
         break;
       case TURN_R_LEFT:
         if (_context.edgeSensorValues[RR_EDGE] > EDGE_THRESHOLD) {
-          _state = FORWARD;
-          goForward(&_context);
+          goForward();
         }
         break;
       case TURN_R_RIGHT:
         if (_context.edgeSensorValues[RL_EDGE] > EDGE_THRESHOLD) {
-          _state = FORWARD;
-          goForward(&_context);
+          goForward();
         }
         break;
       default:
@@ -127,10 +141,45 @@ class TableTopBehavior : public BehaviorWithState {
     }
   }
   
+  void goForward() {
+    _state = GOFORWARD;
+    _context.motorController->setDesiredSpeeds(CRUISE_SPEED, CRUISE_SPEED);
+    SerialDebugger.println("going forward");
+  }
+
+  void goReverse() {
+    _state = GOREVERSE;
+    _context.motorController->setDesiredSpeeds(-CRUISE_SPEED, -CRUISE_SPEED);
+    SerialDebugger.println("going reverse");
+  }
+
+  void turnForwardRight() {
+    _state = TURN_F_RIGHT;
+    _context.motorController->setDesiredSpeeds(0, TURN_SPEED);
+    SerialDebugger.println("turn forward right");
+  }
+
+  void turnForwardLeft() {
+    _state = TURN_F_LEFT;
+    _context.motorController->setDesiredSpeeds(TURN_SPEED, 0);
+    SerialDebugger.println("turn forward left");
+  }
+
+  void turnReverseLeft() {
+    _state = TURN_R_LEFT;
+    _context.motorController->setDesiredSpeeds(0, -TURN_SPEED);
+    SerialDebugger.println("turn reverse left");
+  }
+
+  void turnReverseRight() {
+    _state = TURN_R_RIGHT;
+    _context.motorController->setDesiredSpeeds(-TURN_SPEED, 0);
+    SerialDebugger.println("turn reverse right");
+  }
+  
   void stop() {
-    
     // Stop the robot
-    stopMotors(&_context);
+    _context.motorController->stop();
     _state = STOPPED;
   }
 };

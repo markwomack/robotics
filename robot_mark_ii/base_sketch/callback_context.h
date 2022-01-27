@@ -29,6 +29,7 @@
 
 // My includes
 #include <MotorManager.h>
+#include <MotorController.h>
 #include <VL6180I2CMux.h>
 
 // Local includes
@@ -51,18 +52,13 @@ struct CallbackContext {
   // Motor and encoder manager
   MotorManager* motorManager;
 
+  // Motor controller
+  MotorController* motorController;
+
   uint16_t edgeSensorValues[NUM_EDGE_SENSORS];
   uint16_t centerSurfaceSensorValues[NUM_CENTER_SURFACE_SENSORS];
   uint16_t frontSurfaceSensorValues[NUM_FRONT_SURFACE_SENSORS];
   uint16_t rearSurfaceSensorValues[NUM_REAR_SURFACE_SENSORS];
-  
-  uint8_t samples_index;
-  long last_encoder_left;
-  long last_encoder_right;
-  unsigned long last_encoder_read_time;
-  
-  double vel_samples_left[NUM_VEL_SAMPLES];
-  double vel_samples_right[NUM_VEL_SAMPLES];
 };
 
  #endif

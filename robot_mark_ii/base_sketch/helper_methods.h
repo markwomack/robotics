@@ -31,23 +31,13 @@ void initializeMotorsAndEncoders(CallbackContext* context);
 void initializeDistanceSensors(CallbackContext* context);
 void initializeEdgeSensors(CallbackContext* context);
 void initializeSurfaceSensors(CallbackContext* context);
+void resetEncoders(CallbackContext* context);
 
-void resetEncodersAndVelocities(CallbackContext* context);
-void readEncoders(void* context);
+void adjustMotorSpeeds(void* context);
+
 void readEdgeSensors(void* context);
 void readSurfaceSensors(void* context);
 void readDistanceSensors(void* context);
 void calibrateSurfaceSensors(CallbackContext* context);
-
-double getSampledVelocity(uint8_t motor, CallbackContext* context);
-void printVelocities(void* context);
-
-void stopMotors(CallbackContext* context);
-void goForward(CallbackContext* context);
-void goReverse(CallbackContext* context);
-void turnForwardLeft(CallbackContext* context);
-void turnReverseLeft(CallbackContext* context);
-void turnForwardRight(CallbackContext* context);
-void turnReverseRight(CallbackContext* context);
 
  #endif
