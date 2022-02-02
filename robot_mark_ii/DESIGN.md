@@ -4,7 +4,9 @@ This document outlines the design of the Mark II 'Beatrice' robot.
 
 ## Components
 
-These are the major components that make up Beatrice. This list does not have incidentals like protoboards, sockets, pins, and wires.
+These are the major components that make up Beatrice. This list does not have incidentals like protoboards, sockets, pins,
+spacers, connectors, and wires. A wiring diagram is be provided, but how the components and wiring is arranged is left as
+an exercise to the reader.
 
 - [Teensy 3.5 microcontroller](https://www.pjrc.com/store/teensy35.html)
 - [Pololu Qik 2s9V1 motor controller](https://www.pololu.com/product/1110)
@@ -18,8 +20,11 @@ These are the major components that make up Beatrice. This list does not have in
 - [Pololu IR sensors (4 total for edge detection](https://www.pololu.com/product/2459)
 - [Poloul IR sensors (2 total for line detection](https://www.pololu.com/product/961)
 - [Pololu VL6180X Time-of-Flight Distance Sensor (10)](https://www.pololu.com/product/2489)
+- [Pololu mini pushbutton switch (2)](https://www.pololu.com/product/1400)
 - [Adafruit NeoPixel ring 16x5050](https://www.adafruit.com/product/2855)
 - [5v power bank battery](https://www.amazon.com/gp/product/B07K6HJTK2)
+- [USB cable slim connector](https://www.amazon.com/gp/product/B01MZ8RA3A)
+- [Pololu mini pushbutton switch (2)](https://www.pololu.com/product/1400)
 
 The VL6180X ToF distance sensors are mounted on a custom PCB board that is designed to use a multiplexer to choose which sensor
 to access on the I2C bus. This is required since the sensors all have the same I2C address.
