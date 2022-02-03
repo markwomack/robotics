@@ -1,0 +1,250 @@
+connectors:
+  
+  5vVoltageRegulator:
+    pins: [VIN,GND,VOUT]
+    
+  Teensy3.5:
+    pincount: 48
+    pins: [GND,Vin,Analog GND,3.3V,RX1,TX1,D2,D3,D4,D5,D6,D7,D8,D9,D10,D11,D12,D13,D14,D15,D16,
+    D17,SDA0,SCL0,D20,D21,D22,D23,D24,D25,D26,D27,D28,D29,D30,D31,D32,D33,D34,D35,D36,SCL1,SDA1,D39]
+    hide_disconnected_pins: True
+    notes: Data pins only.<br/>See pinout card for reference.
+
+  Qik2s9v1:
+    pins: [GND,VCC,RX,TX,RST,ERR,M1-,M1+,M0-,M0+,MOTGND,VMOT]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  LeftMotorEncoder:
+    pins: [M1,M2,VCC,A_OUT,B_OUT,GND]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+  
+  RightMotorEncoder:
+    pins: [M1,M2,VCC,A_OUT,B_OUT,GND]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+  
+  ToF_MUX_PCB_Front:
+    pins: [GND,VCC,SCL,SDA,0,1,2]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+  
+  ToF_MUX_PCB_Rear:
+    pins: [GND,VCC,SCL,SDA,0,1,2]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  FrontLeft_IR_Edge_Sensor:
+    pins: [GND,VIN,OUT]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  FrontRight_IR_Edge_Sensor:
+    pins: [GND,VIN,OUT]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  RearLeft_IR_Edge_Sensor:
+    pins: [GND,VIN,OUT]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  RearRight_IR_Edge_Sensor:
+    pins: [GND,VIN,OUT]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  RearRight_IR_Edge_Sensor:
+    pins: [GND,VIN,OUT]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  Front_IR_Surface_Sensors:
+    pins: [GND,VCC,7,8]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  Center_IR_Surface_Sensors:
+    pins: [GND,VCC,1,2,3,4,5,6]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  Rear_IR_Surface_Sensors:
+    pins: [GND,VCC,7,8]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  NeoPixelRing:
+    pins: [GND,VCC,DATA_IN]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+    
+  PushButton_Start:
+    pins: [T1, T2]
+    
+  PullSignalHigh:
+    pins: [GND,Resistor]
+    
+cables:
+    
+  POWER_5_VOLT:
+    category: bundle
+    wirecount: 2
+    gauge: 0.25 mm2
+    colors: [BK, RD]
+    
+  QIK_SERIAL_DATA:
+    gauge: 0.25 mm2
+    colors: [GN, WH]
+    
+  QIK_RESET:
+    gauge: 0.25 mm2
+    colors: [WH]
+    
+  NEOPIXEL_DATA:
+    gauge: 0.25 mm2
+    colors: [YE]
+    
+  L_ENCODER_DATA:
+    gauge: 0.25 mm2
+    colors: [BN,WH]
+    
+  R_ENCODER_DATA:
+    gauge: 0.25 mm2
+    colors: [BN,WH]
+    
+  MUX_FRONT_DATA:
+    gauge: 0.25 mm2
+    wirecount: 3
+    colors: [BU]
+    
+  MUX_FRONT_I2C:
+    gauge: 0.25 mm2
+    colors: [YE,WH]
+    
+  MUX_REAR_DATA:
+    gauge: 0.25 mm2
+    wirecount: 3
+    colors: [BU]
+    
+  MUX_REAR_I2C:
+    gauge: 0.25 mm2
+    colors: [YE,WH]
+    
+  FL_IR_EDGE_DATA:
+    gauge: 0.25 mm2
+    colors: [WH]
+    
+  FR_IR_EDGE_DATA:
+    gauge: 0.25 mm2
+    colors: [WH]
+    
+  RL_IR_EDGE_DATA:
+    gauge: 0.25 mm2
+    colors: [WH]
+    
+  RR_IR_EDGE_DATA:
+    gauge: 0.25 mm2
+    colors: [WH]
+    
+  F_IR_SURFACE_DATA:
+    gauge: 0.25 mm2
+    wirecount: 2
+    colors: [BU]
+    
+  C_IR_SURFACE_DATA:
+    gauge: 0.25 mm2
+    wirecount: 6
+    colors: [BU]
+    
+  R_IR_SURFACE_DATA:
+    gauge: 0.25 mm2
+    wirecount: 2
+    colors: [BU]
+    
+  PUSHBUTTON_START:
+    gauge: 0.25 mm2
+    colors: [YE]
+    
+  PULLSIGNAL_HIGH:
+    gauge: 0.25 mm2
+    colors: [BK,RD]
+  
+connections:
+  -
+    - 5vVoltageRegulator: [GND,VOUT]
+    - POWER_5_VOLT: [1,2]
+    - PullSignalHigh: [GND,Resistor]
+  -
+    - PullSignalHigh: [GND, Resistor]
+    - PULLSIGNAL_HIGH: [1,2]
+    - PushButton_Start: [T1,T2]
+  -
+    - Teensy3.5: [D33]
+    - PUSHBUTTON_START: [1]
+    - PushButton_Start: [T2]
+  -
+    - Teensy3.5: [RX1,TX1]
+    - QIK_SERIAL_DATA: [1,2]
+    - Qik2s9v1: [RX,TX]
+  -
+    - Teensy3.5: [D3]
+    - QIK_RESET: [1]
+    - Qik2s9v1: [RST]
+  -
+    - Teensy3.5: [SCL1, SDA1]
+    - MUX_FRONT_I2C: [1,2]
+    - ToF_MUX_PCB_Front: [SCL,SDA]
+  -
+    - Teensy3.5: [D10,D11,D12]
+    - MUX_FRONT_DATA: [1,2,3]
+    - ToF_MUX_PCB_Front: [0,1,2]
+  -
+    - Teensy3.5: [SCL0, SDA0]
+    - MUX_REAR_I2C: [1,2]
+    - ToF_MUX_PCB_Rear: [SCL,SDA]
+  -
+    - Teensy3.5: [D16,D15,D14]
+    - MUX_REAR_DATA: [1,2,3]
+    - ToF_MUX_PCB_Rear: [0,1,2]
+  -
+    - Teensy3.5: [D9]
+    - NEOPIXEL_DATA: [1]
+    - NeoPixelRing: [DATA_IN]
+  -
+    - Teensy3.5: [D34,D35]
+    - L_ENCODER_DATA: [1,2]
+    - LeftMotorEncoder: [A_OUT,B_OUT]
+  -
+    - Teensy3.5: [D32,D31]
+    - R_ENCODER_DATA: [1,2]
+    - RightMotorEncoder: [A_OUT,B_OUT]
+  -
+    - Teensy3.5: [D36]
+    - FL_IR_EDGE_DATA: [1]
+    - FrontLeft_IR_Edge_Sensor: [OUT]
+  -
+    - Teensy3.5: [D30]
+    - FR_IR_EDGE_DATA: [1]
+    - FrontRight_IR_Edge_Sensor: [OUT]
+  -
+    - Teensy3.5: [D17]
+    - RL_IR_EDGE_DATA: [1]
+    - RearLeft_IR_Edge_Sensor: [OUT]
+  -
+    - Teensy3.5: [D2]
+    - RR_IR_EDGE_DATA: [1]
+    - RearRight_IR_Edge_Sensor: [OUT]
+  -
+    - Teensy3.5: [D21,D20]
+    - F_IR_SURFACE_DATA: [1,2]
+    - Front_IR_Surface_Sensors: [7,8]
+  -
+    - Teensy3.5: [D29,D28,D27,D26,D25,D24]
+    - C_IR_SURFACE_DATA: [1-6]
+    - Center_IR_Surface_Sensors: [1-6]
+  -
+    - Teensy3.5: [D23,D22]
+    - R_IR_SURFACE_DATA: [1,2]
+    - Rear_IR_Surface_Sensors: [7,8]
