@@ -17,29 +17,48 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
- 
- #ifndef HELPER_METHODS_H
- #define HELPER_METHODS_H
+
+#ifndef PIXEL_RING_H
+#define PIXEL_RING_H
 
 // Arduino includes
 #include <inttypes.h>
 
-// Local includes
-#include "callback_context.h"
+// Third party includes
+#include <Adafruit_NeoPixel.h>
 
-void initializeMotorsAndEncoders(CallbackContext* context);
-void initializeDistanceSensors(CallbackContext* context);
-void initializeEdgeSensors(CallbackContext* context);
-void initializeSurfaceSensors(CallbackContext* context);
-void initializePixelRing(CallbackContext* context);
-void resetEncoders(CallbackContext* context);
+enum RingState {
+  RING_OFF,
+  RING_GREEN_CW,
+  RING_RED_CW,
+  RING_BLUE_CW,
+};
 
-void adjustMotorSpeeds(void* context);
+struct RingColor {
+  char red;
+  char green;
+  char blue;
+};
 
-void readEdgeSensors(void* context);
-void readSurfaceSensors(void* context);
-void readDistanceSensors(void* context);
-void adjustPixelRing(void* context);
-void calibrateSurfaceSensors(CallbackContext* context);
+class PixelRing {
+  public:
+    PixelRing(uint8_t pin, uint16_t numPixels);
+    void start(RingState ringState);
+    void run(void);
+    void changeState(RingState newState);
+    void stop(void);
 
- #endif
+  private:
+    uint16_t _numPixels;
+    RingState _ringState;
+    RingColor _baseColor;
+    int _index;
+    Adafruit_NeoPixel* _neoPixel;
+
+    void setRingStateAndBaseColor(RingState newRingState);
+    void renderBase(void);
+    void renderMovement(void);
+    int getIndexWithOffset(int offset);
+};
+
+#endif

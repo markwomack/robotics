@@ -46,7 +46,7 @@ const double RADIANS_PER_TICK = (2 / TICKS_PER_ROTATION);
 
 // When motor is run at full for one second, this is approximately
 // how many ticks it will turn.
-const double MAX_TICKS_PER_SECOND = 3600;
+const double MAX_TICKS_PER_SECOND = 3600.0;
 
 // This is the number of wheel rotation when run at full for one second.
 const double MAX_ROTATIONS_PER_SECOND = MAX_TICKS_PER_SECOND / TICKS_PER_ROTATION;
@@ -84,5 +84,7 @@ const uint8_t RR_EDGE = 3;
 
 // When the sensor value is over this threshold, then it is over an 'edge'.
 const uint16_t EDGE_THRESHOLD = 1000;
+
+const uint16_t NUM_PIXELS_ON_RING = 16;
 
 #endif

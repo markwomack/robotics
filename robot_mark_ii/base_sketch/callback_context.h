@@ -34,6 +34,7 @@
 
 // Local includes
 #include "robot_constants.h"
+#include "pixel_ring.h"
 
 // Data structure used to store state between callback calls.
 struct CallbackContext {  
@@ -59,6 +60,8 @@ struct CallbackContext {
   uint16_t centerSurfaceSensorValues[NUM_CENTER_SURFACE_SENSORS];
   uint16_t frontSurfaceSensorValues[NUM_FRONT_SURFACE_SENSORS];
   uint16_t rearSurfaceSensorValues[NUM_REAR_SURFACE_SENSORS];
+
+  PixelRing* pixelRing;
 };
 
  #endif

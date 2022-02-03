@@ -26,6 +26,7 @@ const uint8_t POLOLU_QIK_TX_PIN        =  0; // tx Pololu qik
 const uint8_t POLOLU_QIK_RX_PIN        =  1; // rx Pololu qik
 const uint8_t RR_EDGE_SENSOR_PIN       =  2; // rear-right edge sensor
 const uint8_t POLOLU_QIK_RESET_PIN     =  3; // reset Pololu qik
+const uint8_t PIXEL_RING_PIN           =  9; // pixel ring data pin
 const uint8_t FRONT_MUX_PIN0           = 10; // front distance sensor mux selector pin 0
 const uint8_t FRONT_MUX_PIN1           = 11; // front distance sensor mux selector pin 1
 const uint8_t FRONT_MUX_PIN2           = 12; // front distance sensor mux selector pin 2

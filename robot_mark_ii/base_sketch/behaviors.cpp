@@ -56,16 +56,19 @@ class TableTopBehavior : public Behavior {
   void initialize() {
     initializeMotorsAndEncoders(&_context);
     initializeEdgeSensors(&_context);
+    initializePixelRing(&_context);
   }
 
   void start(ButtonExecutor* buttonExecutor) {
 
     // Start the motor controller
     _context.motorController->start();
+    _context.pixelRing->start(RING_OFF);
 
     // Register the methods used when running this behavior
     buttonExecutor->callbackEvery(50, readEdgeSensors, (void*)&_context);
     buttonExecutor->callbackEvery(50, adjustMotorSpeeds, (void*)&_context);
+    buttonExecutor->callbackEvery(50, adjustPixelRing, (void*)&_context);
     buttonExecutor->callbackEvery(100, runBehavior, (void*)this);
   }
   
@@ -134,42 +137,49 @@ class TableTopBehavior : public Behavior {
   void goForward() {
     _state = GOFORWARD;
     _context.motorController->setDesiredSpeeds(CRUISE_SPEED, CRUISE_SPEED);
+    _context.pixelRing->changeState(RING_GREEN_CW);
     SerialDebugger.println("going forward");
   }
 
   void goReverse() {
     _state = GOREVERSE;
     _context.motorController->setDesiredSpeeds(-CRUISE_SPEED, -CRUISE_SPEED);
+    _context.pixelRing->changeState(RING_RED_CW);
     SerialDebugger.println("going reverse");
   }
 
   void turnForwardRight() {
     _state = TURN_F_RIGHT;
     _context.motorController->setDesiredSpeeds(0, TURN_SPEED);
+    _context.pixelRing->changeState(RING_BLUE_CW);
     SerialDebugger.println("turn forward right");
   }
 
   void turnForwardLeft() {
     _state = TURN_F_LEFT;
     _context.motorController->setDesiredSpeeds(TURN_SPEED, 0);
+    _context.pixelRing->changeState(RING_BLUE_CW);
     SerialDebugger.println("turn forward left");
   }
 
   void turnReverseLeft() {
     _state = TURN_R_LEFT;
     _context.motorController->setDesiredSpeeds(0, -TURN_SPEED);
+    _context.pixelRing->changeState(RING_BLUE_CW);
     SerialDebugger.println("turn reverse left");
   }
 
   void turnReverseRight() {
     _state = TURN_R_RIGHT;
     _context.motorController->setDesiredSpeeds(-TURN_SPEED, 0);
+    _context.pixelRing->changeState(RING_BLUE_CW);
     SerialDebugger.println("turn reverse right");
   }
   
   void stop() {
     // Stop the robot
     _context.motorController->stop();
+    _context.pixelRing->stop();
     _state = STOPPED;
   }
 };

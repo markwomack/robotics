@@ -95,6 +95,10 @@ void initializeSurfaceSensors(CallbackContext* context) {
     NUM_REAR_SURFACE_SENSORS);
 }
 
+void initializePixelRing(CallbackContext* context){
+  context->pixelRing = new PixelRing(PIXEL_RING_PIN, NUM_PIXELS_ON_RING);
+}
+
 void resetEncoders(CallbackContext* context) {  
   // Reset the encoders
   context->motorManager->readAndResetEncoder(LEFT_MOTOR);
@@ -153,6 +157,12 @@ void readDistanceSensors(void* context) {
     SerialDebugger.print(x).print(": ").print(callbackContext->rearDistanceSensorMux->readDistance(x)).print(", ");
   }
   SerialDebugger.println().println();
+}
+
+void adjustPixelRing(void* context) {
+  CallbackContext* callbackContext = ((CallbackContext*)context);
+  
+  callbackContext->pixelRing->run();
 }
 
 void calibrateSurfaceSensors(CallbackContext* context) {
