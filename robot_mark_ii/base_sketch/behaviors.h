@@ -26,13 +26,14 @@
 
 // Local includes
 #include "callback_context.h"
+#include "pixel_ring.h"
 
 class Behavior {
   public:
     Behavior() { }
     
     virtual void initialize();
-    virtual void start(ButtonExecutor* buttonExecutor);
+    virtual void start(ButtonExecutor* buttonExecutor, PixelRing* pixelRing);
     virtual void doBehavior();
     virtual void stop();
 

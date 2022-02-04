@@ -28,6 +28,7 @@
 
 // Local includes
 #include "pin_assignments.h"
+#include "helper_methods.h"
 #include "behaviors.h"
 
 // This is the state used by the led callback
@@ -35,6 +36,8 @@ struct LEDContext {
   char ledState;
 };
 LEDContext ledContext;
+
+PixelRing* pixelRing;
 
 // This is the behavior defined for the robot
 Behavior* behavior;
@@ -45,10 +48,13 @@ ButtonExecutor buttonExecutor;
 
 void setup() {
   SerialDebugger.begin(9600);
-    
+
+  pixelRing = initializePixelRing();
+  pixelRing->start(RING_OFF);
+  
   // Setup the executor with the button pin and callbacks
   buttonExecutor.setup(
-    BUTTON_PIN, HIGH, setupCallback, startCallback, stopCallback);
+    BUTTON_PIN, HIGH, setupCallback, startCallback, stopCallback, idleCallback);
 }
 
 void loop() {
@@ -66,6 +72,8 @@ void setupCallback() {
   pinMode(LED_PIN, OUTPUT);
   ledContext.ledState = LOW;
 
+  pixelRing->changeState(RING_WHITE_FADE);
+
   // Create the behavior
   behavior = createBehavior();
 }
@@ -80,7 +88,7 @@ void startCallback() {
   buttonExecutor.callbackEvery(500, applyLEDState, (void*)&ledContext);
 
   // Start the behavior
-  behavior->start(&buttonExecutor);
+  behavior->start(&buttonExecutor, pixelRing);
 }
 
 // This is where the sketch should handle the ending of execution.  It will be
@@ -95,6 +103,13 @@ void stopCallback() {
 
   // Stop the behavior
   behavior->stop();
+
+  pixelRing->changeState(RING_WHITE_FADE);
+}
+
+// Called when the executor is not executing.
+void idleCallback() {
+  pixelRing->run();
 }
 
 void abortExecution() {

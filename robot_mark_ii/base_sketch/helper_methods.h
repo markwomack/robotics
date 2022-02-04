@@ -27,6 +27,8 @@
 // Local includes
 #include "callback_context.h"
 
+PixelRing* initializePixelRing();
+
 void initializeMotorsAndEncoders(CallbackContext* context);
 void initializeDistanceSensors(CallbackContext* context);
 void initializeEdgeSensors(CallbackContext* context);

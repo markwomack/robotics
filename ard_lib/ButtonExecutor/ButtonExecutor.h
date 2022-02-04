@@ -26,14 +26,15 @@
 
 // State stored and sent to the executor callbacks
 struct ExecutorContext {
-	Timer timer;
-	int8_t buttonPin;
+  Timer timer;
+  int8_t buttonPin;
   char buttonDefaultState;
-	char oldButtonState;
-	boolean isExecuting;
-	void (*sketchStartCallback)();
-	void (*sketchStopCallback)();
-	int8_t callbackReferences[MAX_NUMBER_OF_EVENTS];
+  char oldButtonState;
+  boolean isExecuting;
+  void (*sketchStartCallback)();
+  void (*sketchStopCallback)();
+  void (*idleCallback)();
+  int8_t callbackReferences[MAX_NUMBER_OF_EVENTS];
 };
 
 /*
@@ -55,9 +56,11 @@ public:
    * sketchSetupCallback - The method to call with initial setup. Only called once.
    * sketchStartCallback - The method called when button pressed to start.
    * sketchStopCallback - The method called when button pressed to stop.
+   * stoppedIdelCallback - The method called when the executor is not executing.
    */
 	void setup(int8_t buttonPin, char buttonDefaultState, void (*sketchSetupCallback)(),
-		void (*sketchStartCallback)(), void (*sketchStopCallback)());
+		void (*sketchStartCallback)(), void (*sketchStopCallback)(),
+		void (*idleCallback)()=0);
 
   /*
    * Call this in the loop method of the sketch. As part of its execution, it will

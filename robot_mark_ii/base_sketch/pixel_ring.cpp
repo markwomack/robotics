@@ -46,8 +46,20 @@ void PixelRing::start(RingState ringState) {
 }
 
 void PixelRing::run(void) {
-  renderMovement();
-  _index = getIndexWithOffset(1);
+  if (_ringState == RING_WHITE_FADE) {
+    if (_index == -1 && _baseColor.red == 2) {
+      _index = 1;
+    } else if (_index == 1 && _baseColor.red == 30) {
+      _index = -1;
+    }
+    _baseColor.red += _index;
+    _baseColor.green += _index;
+    _baseColor.blue += _index;
+    renderMovement();
+  } else {
+    renderMovement();
+    _index = getIndexWithOffset(1);
+  }
 }
 
 void PixelRing::changeState(RingState newState) {
@@ -90,6 +102,11 @@ void PixelRing::setRingStateAndBaseColor(RingState newRingState) {
       _baseColor.green = 0;
       _baseColor.blue = 5;
       break;
+    case RING_WHITE_FADE:
+      _baseColor.red = 2;
+      _baseColor.green = 2;
+      _baseColor.blue = 2;
+      _index = 1;
     default:
       _baseColor.red = 0;
       _baseColor.green = 0;
@@ -105,32 +122,37 @@ void PixelRing::renderBase(void){
 }
 
 void PixelRing::renderMovement(void) {
-  for (int offset = -1; offset < 3; offset++) {
-    int index = getIndexWithOffset(offset);
-    uint32_t color;
-    
-    switch(offset) {
-      case 0:
-        color = _neoPixel->Color((_baseColor.red != 0) ? _baseColor.red + (255 -_baseColor.red)/4 : 0,
-                                 (_baseColor.green != 0) ? _baseColor.green + (255 -_baseColor.green)/4 : 0,
-                                 (_baseColor.blue != 0) ? _baseColor.blue + (255 -_baseColor.blue)/4 : 0);
-        break;
-      case 1:
-        color = _neoPixel->Color((_baseColor.red != 0) ? _baseColor.red + (255 -_baseColor.red)/2 : 0,
-                                 (_baseColor.green != 0) ? _baseColor.green + (255 -_baseColor.green)/2 : 0,
-                                 (_baseColor.blue != 0) ? _baseColor.blue + (255 -_baseColor.blue)/2 : 0);
-        break;
-      case 2:
-        color = _neoPixel->Color((_baseColor.red != 0) ? 255 : 0,
-                                 (_baseColor.green != 0) ? 255: 0,
-                                 (_baseColor.blue != 0) ? 255 : 0);
-        break;
-      default:
-        color = _neoPixel->Color(_baseColor.red, _baseColor.green, _baseColor.blue);
-        break;
+  if (_ringState == RING_WHITE_FADE) {
+    for (int i = 0; i < _numPixels; i++) {
+      _neoPixel->setPixelColor(i, _neoPixel->Color(_baseColor.red, _baseColor.green, _baseColor.blue));
     }
-    
-    _neoPixel->setPixelColor(index, color);
+  } else {
+    for (int offset = -1; offset < 3; offset++) {
+      int index = getIndexWithOffset(offset);
+      uint32_t color;
+      
+      switch(offset) {
+        case 0:
+          color = _neoPixel->Color((_baseColor.red != 0) ? _baseColor.red + (255 -_baseColor.red)/4 : 0,
+                                   (_baseColor.green != 0) ? _baseColor.green + (255 -_baseColor.green)/4 : 0,
+                                   (_baseColor.blue != 0) ? _baseColor.blue + (255 -_baseColor.blue)/4 : 0);
+          break;
+        case 1:
+          color = _neoPixel->Color((_baseColor.red != 0) ? _baseColor.red + (255 -_baseColor.red)/2 : 0,
+                                   (_baseColor.green != 0) ? _baseColor.green + (255 -_baseColor.green)/2 : 0,
+                                   (_baseColor.blue != 0) ? _baseColor.blue + (255 -_baseColor.blue)/2 : 0);
+          break;
+        case 2:
+          color = _neoPixel->Color((_baseColor.red != 0) ? 255 : 0,
+                                   (_baseColor.green != 0) ? 255: 0,
+                                   (_baseColor.blue != 0) ? 255 : 0);
+          break;
+        default:
+          color = _neoPixel->Color(_baseColor.red, _baseColor.green, _baseColor.blue);
+          break;
+      }
+      _neoPixel->setPixelColor(index, color);
+    }
   }
   _neoPixel->show();
 }

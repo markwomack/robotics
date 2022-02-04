@@ -59,11 +59,11 @@ class TableTopBehavior : public Behavior {
     initializePixelRing(&_context);
   }
 
-  void start(ButtonExecutor* buttonExecutor) {
+  void start(ButtonExecutor* buttonExecutor, PixelRing* pixelRing) {
 
     // Start the motor controller
     _context.motorController->start();
-    _context.pixelRing->start(RING_OFF);
+    _context.pixelRing = pixelRing;
 
     // Register the methods used when running this behavior
     buttonExecutor->callbackEvery(50, readEdgeSensors, (void*)&_context);
@@ -179,7 +179,6 @@ class TableTopBehavior : public Behavior {
   void stop() {
     // Stop the robot
     _context.motorController->stop();
-    _context.pixelRing->stop();
     _state = STOPPED;
   }
 };

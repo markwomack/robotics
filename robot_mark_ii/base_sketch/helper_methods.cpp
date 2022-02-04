@@ -95,8 +95,12 @@ void initializeSurfaceSensors(CallbackContext* context) {
     NUM_REAR_SURFACE_SENSORS);
 }
 
+PixelRing* initializePixelRing() {
+  return new PixelRing(PIXEL_RING_PIN, NUM_PIXELS_ON_RING);
+}
+
 void initializePixelRing(CallbackContext* context){
-  context->pixelRing = new PixelRing(PIXEL_RING_PIN, NUM_PIXELS_ON_RING);
+  context->pixelRing = initializePixelRing();
 }
 
 void resetEncoders(CallbackContext* context) {  

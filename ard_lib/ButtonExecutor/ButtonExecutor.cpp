@@ -76,10 +76,18 @@ void checkButton(void* context) {
 	executorContext->oldButtonState = currentButtonState;
 }
 
+// Called to perform idle behavior when the executor is not executing.
+void doIdle(void* context) {
+  ExecutorContext* executorContext = (ExecutorContext*)context;
+  if (!executorContext->isExecuting) {
+    (*(executorContext->idleCallback))();
+  }
+}
+
 // Called to set everything up for the executor to execute the sketch.
 void ButtonExecutor::setup(int8_t buttonPin, char buttonDefaultState,
     void (*sketchSetupCallback)(), void (*sketchStartCallback)(),
-    void (*sketchStopCallback)()) {
+    void (*sketchStopCallback)(), void (*idleCallback)()) {
 
 	SerialDebugger.println("*** Setting up");
 			
@@ -89,6 +97,7 @@ void ButtonExecutor::setup(int8_t buttonPin, char buttonDefaultState,
 	_executorContext.isExecuting = false;
 	_executorContext.sketchStartCallback = sketchStartCallback;
 	_executorContext.sketchStopCallback = sketchStopCallback;
+	_executorContext.idleCallback = idleCallback;
 	for(int index = 0; index < MAX_NUMBER_OF_CALLBACKS; index++) {
 		_executorContext.callbackReferences[index] = TIMER_NOT_AN_EVENT;
 	}
@@ -99,6 +108,9 @@ void ButtonExecutor::setup(int8_t buttonPin, char buttonDefaultState,
   // Register internal callback for tracking button pushes
 	pinMode(_executorContext.buttonPin, INPUT);
 	_executorContext.timer.every(10, checkButton, (void*)&_executorContext);
+	if (_executorContext.idleCallback) {
+	  _executorContext.timer.every(50, doIdle, (void*)&_executorContext);
+	}
 	
 	SerialDebugger.println("*** Ready to start execution");
 }
