@@ -1,2 +1,2 @@
-# robot_mark_ii
-This is a collection of Arduino sketches for the Robot Mark II. They can be used to test components as they are attached, and then there a sketches for specific behaviors.
+# Robot Mark II 'Beatrice'
+This is the directory that contains all of the code and designs specific to the Robot Mark II 'Beatrice'.
