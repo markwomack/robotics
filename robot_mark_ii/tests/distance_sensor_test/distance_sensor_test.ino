@@ -44,7 +44,7 @@ const uint8_t BUTTON_PIN        = 33; // start/stop button
 ButtonExecutor buttonExecutor;
 
 VL6180I2CMux* frontSensorMux;
-int numFrontMuxSensor = 4;
+int numFrontMuxSensor = 5;
 
 VL6180I2CMux* rearSensorMux;
 int numRearMuxSensor = 5;
