@@ -24,8 +24,10 @@
 #include <inttypes.h>
 #include <Encoder.h>
 
-#define LEFT_MOTOR 1
-#define RIGHT_MOTOR 2
+enum Motor {
+  LEFT_MOTOR,
+  RIGHT_MOTOR
+};
 
 class MotorManager
 {
@@ -36,7 +38,7 @@ public:
    * value between -1 and 1.
    */
 
-  virtual void setMotorSpeed(uint8_t motor, double speed) = 0;
+  virtual void setMotorSpeed(Motor motor, double speed) = 0;
 
   /*
    * Sets the speed of the motors. Speeds are expected to be a 
@@ -55,18 +57,18 @@ public:
    * Reads the value of the given motors encoder.
    */
 
-  int32_t readEncoder(uint8_t motor);
+  int32_t readEncoder(Motor motor);
   /*
    * Reads the value of the given motors encoder and then resets the
    * value to zero.
    */
 
-  int32_t readAndResetEncoder(uint8_t motor);
+  int32_t readAndResetEncoder(Motor motor);
 
   /*
    * Sets the value of the given motors encoder to the given value.
    */
-  void writeEncoder(uint8_t motor, int32_t value);
+  void writeEncoder(Motor motor, int32_t value);
 
 protected:
   Encoder* _leftEncoder;

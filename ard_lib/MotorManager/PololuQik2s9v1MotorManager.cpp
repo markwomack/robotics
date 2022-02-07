@@ -34,7 +34,7 @@ int mapSpeed(double input)
   return (int)(min(max(input, -1.0), 1.0) * 127);
 }
 
-void PololuQik2s9v1MotorManager::setMotorSpeed(uint8_t motor, double speed)
+void PololuQik2s9v1MotorManager::setMotorSpeed(Motor motor, double speed)
 {
   if (motor == LEFT_MOTOR) {
     qik->setM0Speed(mapSpeed(speed));

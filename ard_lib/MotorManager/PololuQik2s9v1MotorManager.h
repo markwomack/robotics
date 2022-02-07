@@ -31,7 +31,7 @@ class PololuQik2s9v1MotorManager : public MotorManager
 public:
   PololuQik2s9v1MotorManager(uint8_t txPin, uint8_t rxPin, uint8_t resetPin);
 
-  void setMotorSpeed(uint8_t motor, double speed);
+  void setMotorSpeed(Motor motor, double speed);
   void setMotorSpeeds(double speedLeft, double speedRight);
   
 private:

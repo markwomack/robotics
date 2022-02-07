@@ -28,7 +28,7 @@ void MotorManager::setupEncoders(
   _rightEncoder = new Encoder(rightEncoderPhaseAPin, rightEncoderPhaseBPin);
 }
 
-int32_t MotorManager::readEncoder(uint8_t motor)
+int32_t MotorManager::readEncoder(Motor motor)
 {
   if (motor == LEFT_MOTOR) {
     return _leftEncoder->read();
@@ -37,7 +37,7 @@ int32_t MotorManager::readEncoder(uint8_t motor)
   }
 }
 
-int32_t MotorManager::readAndResetEncoder(uint8_t motor)
+int32_t MotorManager::readAndResetEncoder(Motor motor)
 {
   if (motor == LEFT_MOTOR) {
     return _leftEncoder->readAndReset();
@@ -46,7 +46,7 @@ int32_t MotorManager::readAndResetEncoder(uint8_t motor)
   }
 }
 
-void MotorManager::writeEncoder(uint8_t motor, int32_t value)
+void MotorManager::writeEncoder(Motor motor, int32_t value)
 {
   if (motor == LEFT_MOTOR) {
     return _leftEncoder->write(value);
