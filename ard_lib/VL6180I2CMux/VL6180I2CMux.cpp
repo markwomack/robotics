@@ -30,10 +30,6 @@ VL6180I2CMux::VL6180I2CMux(
     _muxPin2 = muxPin2;
     _sensor = new VL6180X();
     _sensor->setAddress(sensorAddress);
-    _calibrationOffsets = new int[_numSensors];
-    for (int i = 0; i < _numSensors; i++) {
-      _calibrationOffsets[i] = 0;
-    }
   }
   
   VL6180I2CMux::VL6180I2CMux(
@@ -46,10 +42,6 @@ VL6180I2CMux::VL6180I2CMux(
     _sensor = new VL6180X();
     _sensor->setBus(i2cBus);
     _sensor->setAddress(sensorAddress);
-    _calibrationOffsets = new int[_numSensors];
-    for (int i = 0; i < _numSensors; i++) {
-      _calibrationOffsets[i] = 0;
-    }
   }
 
 void VL6180I2CMux::selectSensor(uint8_t sensorNum) {
@@ -82,10 +74,6 @@ int VL6180I2CMux::initializeSensors() {
     _sensor->setTimeout(100);
   }
   return retVal;
-}
-
-void VL6180I2CMux::setCalibrationOffsets(const int* offsets) {
-  memcpy(_calibrationOffsets, offsets, sizeof(int)*_numSensors);
 }
 
 void VL6180I2CMux::writeRegister(uint8_t sensorNum, uint16_t reg, uint8_t value) {
@@ -128,10 +116,6 @@ uint16_t VL6180I2CMux::readDistance(uint8_t sensorNum) {
   if (_sensor->timeoutOccurred()) {
     return 0;
   } else {
-    if ((distance + _calibrationOffsets[sensorNum]) < 0) {
-      return 0;
-    } else {
-      return distance + _calibrationOffsets[sensorNum];
-    }
+    return distance;
   }
 }

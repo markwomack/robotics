@@ -33,6 +33,14 @@ class VL6180I2CMux
     VL6180I2CMux(TwoWire* i2cBus, int sensorAddress, uint8_t numSensors,
       uint8_t muxPin0, uint8_t muxPin1, uint8_t muxPin2);
     int initializeSensors();
+    
+    void writeRegister(uint8_t sensorNum, uint16_t reg, uint8_t value);
+    void writeRegister16Bit(uint8_t sensorNum, uint16_t reg, uint16_t value);
+    void writeRegister32Bit(uint8_t sensorNum, uint16_t reg, uint32_t value);
+    uint8_t readRegister(uint8_t sensorNum, uint16_t reg);
+    uint16_t readRegister16Bit(uint8_t sensorNum, uint16_t reg);
+    uint32_t readRegister32Bit(uint8_t sensorNum, uint16_t reg);
+    
     uint16_t readDistance(uint8_t sensorNum);
     
   private:
