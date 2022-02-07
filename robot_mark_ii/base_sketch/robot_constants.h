@@ -28,15 +28,18 @@
 
  // wheel diameter in meters (31 mm)
 const double WHEEL_DIAM_M = 0.031;
+const double WHEEL_CIRCUMFERENCE_M = 2.0 * PI * (WHEEL_DIAM_M/2.0); // C=2*pi*r
 
 // distance between wheels,center to center (83 mm)
-const double WHEEL_DIST_M = 0.083;
+const double BASE_DIST_M = 0.083;
+const double BASE_CIRCUMFERENCE_M = 2.0 * PI * (BASE_DIST_M/2.0);
+
+const double WHEEL_ROTATIONS_PER_360_DEGREES = BASE_CIRCUMFERENCE_M/WHEEL_CIRCUMFERENCE_M;
 
 // encoder ticks for single wheel revolution
 const double TICKS_PER_ROTATION = 3000.0; // 250:1 * 12 ticks
 
-// Code will use Radians (angular velocity), but meters is provided for reference.
-const double METERS_PER_TICK = (PI * WHEEL_DIAM_M) / TICKS_PER_ROTATION;
+// Code will use Radians (angular velocity) for velocity measurements
 const double RADIANS_PER_TICK = (2 / TICKS_PER_ROTATION);
 
 // These constants are based on measurements of the motor performance using a
@@ -59,6 +62,10 @@ const double MAX_METERS_PER_SECOND = MAX_ROTATIONS_PER_SECOND * (PI * WHEEL_DIAM
 // There are 2 radians in 360 degrees.
 const double MAX_RADIANS_PER_SECOND = MAX_ROTATIONS_PER_SECOND * 2;
 
+// When spinning in place, use this tick measurement to measure movement by degree.
+const double TICKS_PER_360_DEGREES = WHEEL_ROTATIONS_PER_360_DEGREES * TICKS_PER_ROTATION;
+const double TICKS_PER_DEGREE = TICKS_PER_360_DEGREES/360.0;
+
 // Constants used with PID controller in the motor controller
 const double KP(0.25);
 const double KI(0.0008);
@@ -69,6 +76,7 @@ const double KD(0.0005);
 // when performing any turn.
 const double CRUISE_SPEED = (0.9 * MAX_RADIANS_PER_SECOND); // 90% of max
 const double TURN_SPEED = (0.4 * MAX_RADIANS_PER_SECOND); // 40% of max
+const double SPIN_SPEED = (0.2 * MAX_RADIANS_PER_SECOND); // 20% of max
 
 const uint8_t NUM_EDGE_SENSORS           = 4;
 const uint8_t NUM_FRONT_SURFACE_SENSORS  = 2;
