@@ -19,7 +19,7 @@
  */
 
 #include "VL6180I2CMux.h"
-//#include <SerialDebug.h>
+#include <SerialDebug.h>
 
 VL6180I2CMux::VL6180I2CMux(
   int sensorAddress, uint8_t numSensors, uint8_t muxPin0,
@@ -30,6 +30,10 @@ VL6180I2CMux::VL6180I2CMux(
     _muxPin2 = muxPin2;
     _sensor = new VL6180X();
     _sensor->setAddress(sensorAddress);
+    _calibrationOffsets = new int[_numSensors];
+    for (int i = 0; i < _numSensors; i++) {
+      _calibrationOffsets[i] = 0;
+    }
   }
   
   VL6180I2CMux::VL6180I2CMux(
@@ -42,6 +46,10 @@ VL6180I2CMux::VL6180I2CMux(
     _sensor = new VL6180X();
     _sensor->setBus(i2cBus);
     _sensor->setAddress(sensorAddress);
+    _calibrationOffsets = new int[_numSensors];
+    for (int i = 0; i < _numSensors; i++) {
+      _calibrationOffsets[i] = 0;
+    }
   }
 
 void VL6180I2CMux::selectSensor(uint8_t sensorNum) {
@@ -71,21 +79,59 @@ int VL6180I2CMux::initializeSensors() {
     selectSensor(x);
     _sensor->init();
     _sensor->configureDefault();
-    _sensor->setTimeout(50);
+    _sensor->setTimeout(100);
   }
   return retVal;
 }
 
+void VL6180I2CMux::setCalibrationOffsets(const int* offsets) {
+  memcpy(_calibrationOffsets, offsets, sizeof(int)*_numSensors);
+}
+
+void VL6180I2CMux::writeRegister(uint8_t sensorNum, uint16_t reg, uint8_t value) {
+  selectSensor(sensorNum);
+  _sensor->writeReg(reg, value);
+}
+
+void VL6180I2CMux::writeRegister16Bit(uint8_t sensorNum, uint16_t reg, uint16_t value) {
+  selectSensor(sensorNum);
+  _sensor->writeReg16Bit(reg, value);
+}
+
+void VL6180I2CMux::writeRegister32Bit(uint8_t sensorNum, uint16_t reg, uint32_t value) {
+  selectSensor(sensorNum);
+  _sensor->writeReg32Bit(reg, value);
+}
+
+uint8_t VL6180I2CMux::readRegister(uint8_t sensorNum, uint16_t reg) {
+  selectSensor(sensorNum);
+  return _sensor->readReg(reg);
+}
+
+uint16_t VL6180I2CMux::readRegister16Bit(uint8_t sensorNum, uint16_t reg) {
+  selectSensor(sensorNum);
+  return _sensor->readReg16Bit(reg);
+}
+
+uint32_t VL6180I2CMux::readRegister32Bit(uint8_t sensorNum, uint16_t reg) {
+  selectSensor(sensorNum);
+  return _sensor->readReg32Bit(reg);
+}
+    
 uint16_t VL6180I2CMux::readDistance(uint8_t sensorNum) {
   if (sensorNum >= _numSensors) {
     return 0;
   }
 
   selectSensor(sensorNum);
-  uint16_t distance = _sensor->readRangeSingleMillimeters();
+  uint16_t distance = _sensor->readRangeSingle();
   if (_sensor->timeoutOccurred()) {
     return 0;
   } else {
-    return distance;
+    if ((distance + _calibrationOffsets[sensorNum]) < 0) {
+      return 0;
+    } else {
+      return distance + _calibrationOffsets[sensorNum];
+    }
   }
 }
