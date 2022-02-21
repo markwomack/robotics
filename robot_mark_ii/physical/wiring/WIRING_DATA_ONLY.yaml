@@ -25,6 +25,11 @@ connectors:
     hide_disconnected_pins: True
     notes: Data pins only.
   
+  AirLiftWIFI:
+    pins: [GND,VIN,MOSI,MISO,CS,SCK,BUSY,RESET]
+    hide_disconnected_pins: True
+    notes: Data pins only.
+  
   ToF_MUX_PCB_Front:
     pins: [GND,VCC,SCL,SDA,0,1,2]
     hide_disconnected_pins: True
@@ -85,7 +90,7 @@ connectors:
     
   PullSignalHigh:
     pins: [GND,Resistor]
-    
+
 cables:
     
   POWER_5_VOLT:
@@ -101,7 +106,12 @@ cables:
   QIK_RESET:
     gauge: 0.25 mm2
     colors: [WH]
-    
+  
+  AIRLIFT_CTRL:
+    gauge: 0.25 mm2
+    wirecount: 6
+    colors: [BU]
+  
   NEOPIXEL_DATA:
     gauge: 0.25 mm2
     colors: [YE]
@@ -193,6 +203,10 @@ connections:
     - QIK_RESET: [1]
     - Qik2s9v1: [RST]
   -
+    - Teensy3.5: [D7,D8,D9,D14,D16,D15]
+    - AIRLIFT_CTRL: [1,2,3,4,5,6]
+    - AirLiftWIFI: [MOSI,MISO,CS,SCK,BUSY,RESET]
+  -
     - Teensy3.5: [SCL1, SDA1]
     - MUX_FRONT_I2C: [1,2]
     - ToF_MUX_PCB_Front: [SCL,SDA]
@@ -205,11 +219,11 @@ connections:
     - MUX_REAR_I2C: [1,2]
     - ToF_MUX_PCB_Rear: [SCL,SDA]
   -
-    - Teensy3.5: [D16,D15,D14]
+    - Teensy3.5: [D6,D5,D4]
     - MUX_REAR_DATA: [1,2,3]
     - ToF_MUX_PCB_Rear: [0,1,2]
   -
-    - Teensy3.5: [D9]
+    - Teensy3.5: [D39]
     - NEOPIXEL_DATA: [1]
     - NeoPixelRing: [DATA_IN]
   -
@@ -248,3 +262,4 @@ connections:
     - Teensy3.5: [D23,D22]
     - R_IR_SURFACE_DATA: [1,2]
     - Rear_IR_Surface_Sensors: [7,8]
+ 

@@ -27,6 +27,9 @@ connectors:
   RightMotorEncoder:
     pins: [M1,M2,VCC,A_OUT,B_OUT,GND]
   
+  AirLiftWIFI:
+    pins: [GND,VIN,MOSI,MISO,CS,SCK,BUSY,RESET]
+    
   ToF_MUX_PCB_Front:
     pins: [GND,VCC,SCL,SDA,0,1,2]
   
@@ -82,7 +85,7 @@ cables:
     
   POWER_5_VOLT:
     category: bundle
-    wirecount: 30
+    wirecount: 32
     gauge: 0.25 mm2
     colors: [BK, RD]
     
@@ -97,7 +100,12 @@ cables:
   QIK_RESET:
     gauge: 0.25 mm2
     colors: [WH]
-    
+  
+  AIRLIFT_CTRL:
+    gauge: 0.25 mm2
+    wirecount: 6
+    colors: [BU]
+  
   NEOPIXEL_DATA:
     gauge: 0.25 mm2
     colors: [YE]
@@ -216,46 +224,50 @@ connections:
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [9,10]
-    - ToF_MUX_PCB_Front: [GND,VCC]
+    - AirLiftWIFI: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [11,12]
-    - ToF_MUX_PCB_Rear: [GND,VCC]
+    - ToF_MUX_PCB_Front: [GND,VCC]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [13,14]
-    - NeoPixelRing: [GND,VCC]
+    - ToF_MUX_PCB_Rear: [GND,VCC]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [15,16]
-    - PullSignalHigh: [GND,Resistor]
+    - NeoPixelRing: [GND,VCC]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [17,18]
-    - FrontLeft_IR_Edge_Sensor: [GND,VIN]
+    - PullSignalHigh: [GND,Resistor]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [19,20]
-    - FrontRight_IR_Edge_Sensor: [GND,VIN]
+    - FrontLeft_IR_Edge_Sensor: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [21,22]
-    - RearLeft_IR_Edge_Sensor: [GND,VIN]
+    - FrontRight_IR_Edge_Sensor: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [23,24]
-    - RearRight_IR_Edge_Sensor: [GND,VIN]
+    - RearLeft_IR_Edge_Sensor: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [25,26]
-    - Front_IR_Surface_Sensors: [GND,VCC]
+    - RearRight_IR_Edge_Sensor: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [27,28]
-    - Center_IR_Surface_Sensors: [GND,VCC]
+    - Front_IR_Surface_Sensors: [GND,VCC]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [29,30]
+    - Center_IR_Surface_Sensors: [GND,VCC]
+  -
+    - 5vVoltageRegulator: [GND,VOUT]
+    - POWER_5_VOLT: [31,32]
     - Rear_IR_Surface_Sensors: [GND,VCC]
   -
     - 7.5vVoltageRegulator: [GND,VOUT]
@@ -278,6 +290,10 @@ connections:
     - QIK_RESET: [1]
     - Qik2s9v1: [RST]
   -
+    - Teensy3.5: [D7,D8,D9,D14,D16,D15]
+    - AIRLIFT_CTRL: [1,2,3,4,5,6]
+    - AirLiftWIFI: [MOSI,MISO,CS,SCK,BUSY,RESET]
+  -
     - Teensy3.5: [SCL1, SDA1]
     - MUX_FRONT_I2C: [1,2]
     - ToF_MUX_PCB_Front: [SCL,SDA]
@@ -290,11 +306,11 @@ connections:
     - MUX_REAR_I2C: [1,2]
     - ToF_MUX_PCB_Rear: [SCL,SDA]
   -
-    - Teensy3.5: [D16,D15,D14]
+    - Teensy3.5: [D6,D5,D4]
     - MUX_REAR_DATA: [1,2,3]
     - ToF_MUX_PCB_Rear: [0,1,2]
   -
-    - Teensy3.5: [D9]
+    - Teensy3.5: [D39]
     - NEOPIXEL_DATA: [1]
     - NeoPixelRing: [DATA_IN]
   -

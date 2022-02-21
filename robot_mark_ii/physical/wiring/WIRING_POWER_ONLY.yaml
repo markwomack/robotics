@@ -33,6 +33,11 @@ connectors:
     hide_disconnected_pins: True
     notes: Power pins only.
   
+  AirLiftWIFI:
+    pins: [GND,VIN,MOSI,MISO,CS,SCK,BUSY,RESET]
+    hide_disconnected_pins: True
+    notes: Power pins only.
+    
   ToF_MUX_PCB_Front:
     pins: [GND,VCC,SCL,SDA,0,1,2]
     hide_disconnected_pins: True
@@ -110,7 +115,7 @@ cables:
     
   POWER_5_VOLT:
     category: bundle
-    wirecount: 30
+    wirecount: 32
     gauge: 0.25 mm2
     colors: [BK, RD]
     
@@ -134,7 +139,7 @@ cables:
   PULLSIGNAL_HIGH:
     gauge: 0.25 mm2
     colors: [BK,RD]
-  
+
 connections:
   -
     - BatteryPack: [GND,VCC]
@@ -171,46 +176,50 @@ connections:
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [9,10]
-    - ToF_MUX_PCB_Front: [GND,VCC]
+    - AirLiftWIFI: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [11,12]
-    - ToF_MUX_PCB_Rear: [GND,VCC]
+    - ToF_MUX_PCB_Front: [GND,VCC]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [13,14]
-    - NeoPixelRing: [GND,VCC]
+    - ToF_MUX_PCB_Rear: [GND,VCC]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [15,16]
-    - PullSignalHigh: [GND,Resistor]
+    - NeoPixelRing: [GND,VCC]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [17,18]
-    - FrontLeft_IR_Edge_Sensor: [GND,VIN]
+    - PullSignalHigh: [GND,Resistor]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [19,20]
-    - FrontRight_IR_Edge_Sensor: [GND,VIN]
+    - FrontLeft_IR_Edge_Sensor: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [21,22]
-    - RearLeft_IR_Edge_Sensor: [GND,VIN]
+    - FrontRight_IR_Edge_Sensor: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [23,24]
-    - RearRight_IR_Edge_Sensor: [GND,VIN]
+    - RearLeft_IR_Edge_Sensor: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [25,26]
-    - Front_IR_Surface_Sensors: [GND,VCC]
+    - RearRight_IR_Edge_Sensor: [GND,VIN]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [27,28]
-    - Center_IR_Surface_Sensors: [GND,VCC]
+    - Front_IR_Surface_Sensors: [GND,VCC]
   -
     - 5vVoltageRegulator: [GND,VOUT]
     - POWER_5_VOLT: [29,30]
+    - Center_IR_Surface_Sensors: [GND,VCC]
+  -
+    - 5vVoltageRegulator: [GND,VOUT]
+    - POWER_5_VOLT: [31,32]
     - Rear_IR_Surface_Sensors: [GND,VCC]
   -
     - 7.5vVoltageRegulator: [GND,VOUT]
@@ -228,3 +237,4 @@ connections:
     - Qik2s9v1: [M1+,M1-]
     - R_ENCODER_MOTOR_POWER: [1,2]
     - RightMotorEncoder: [M1,M2]
+
