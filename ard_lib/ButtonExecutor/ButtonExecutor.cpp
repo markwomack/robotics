@@ -16,7 +16,7 @@
  */
 
 #include <Arduino.h>
-#include "SerialDebug.h"
+#include <DebugMsgs.h>
 #include "Timer.h"
 #include "ButtonExecutor.h"
 
@@ -33,7 +33,7 @@ void startExecution(ExecutorContext* executorContext) {
 	if (executorContext->isExecuting) {
 		return;
 	}
-	SerialDebugger.println("*** Starting execution");
+	DebugMsgs.println("*** Starting execution");
 	(*(executorContext->sketchStartCallback))();
 	executorContext->isExecuting = true;
 }
@@ -45,7 +45,7 @@ void stopExecution(ExecutorContext* executorContext) {
 	if (!executorContext->isExecuting) {
 		return;
 	}
-	SerialDebugger.println("*** Stopping execution");
+	DebugMsgs.println("*** Stopping execution");
 	
 	// Stop execution of all registered callbacks
 	for(int index = 0; index < MAX_NUMBER_OF_CALLBACKS; index++) {
@@ -56,13 +56,13 @@ void stopExecution(ExecutorContext* executorContext) {
 	
 	(*(executorContext->sketchStopCallback))();
 	executorContext->isExecuting = false;
-	SerialDebugger.println("*** Ready to start execution");
+	DebugMsgs.println("*** Ready to start execution");
 }
 
 // This is a static method that checks the state of the start/reset button.  It
 // is checked every 10ms to allow for bouncing/noise in the button.
 void checkButton(void* context) {
-	//SerialDebugger.print("Checking button ").println(millis());
+	//DebugMsgs.print("Checking button ").println(millis());
 	ExecutorContext* executorContext = (ExecutorContext*)context;
 	int currentButtonState = digitalRead(executorContext->buttonPin);
 	if (currentButtonState == !executorContext->buttonDefaultState &&
@@ -89,7 +89,7 @@ void ButtonExecutor::setup(int8_t buttonPin, char buttonDefaultState,
     void (*sketchSetupCallback)(), void (*sketchStartCallback)(),
     void (*sketchStopCallback)(), void (*idleCallback)()) {
 
-	SerialDebugger.println("*** Setting up");
+	DebugMsgs.println("*** Setting up");
 			
 	_executorContext.buttonPin = buttonPin;
 	_executorContext.oldButtonState = buttonDefaultState;
@@ -112,7 +112,7 @@ void ButtonExecutor::setup(int8_t buttonPin, char buttonDefaultState,
 	  _executorContext.timer.every(50, doIdle, (void*)&_executorContext);
 	}
 	
-	SerialDebugger.println("*** Ready to start execution");
+	DebugMsgs.println("*** Ready to start execution");
 }
 
 // Called by the sketch to execute a loop.
@@ -152,6 +152,6 @@ int8_t ButtonExecutor::callbackStop(int8_t callbackId) {
 
 // Can be called by the sketch to abort execution of the executor.
 void ButtonExecutor::abortExecution() {
-	SerialDebugger.println("*** Aborting execution by request!");
+	DebugMsgs.println("*** Aborting execution by request!");
 	stopExecution(&_executorContext);
 }

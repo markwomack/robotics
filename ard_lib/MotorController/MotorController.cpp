@@ -18,9 +18,6 @@
  *      MA 02110-1301, USA.
  */
 
-// My includes
-#include <SerialDebug.h>
-
 // Local includes
 #include "MotorController.h"
 
@@ -122,11 +119,6 @@ bool MotorController::adjustSpeeds() {
     _rightLastSpeed = min(max(_rightLastSpeed + _rightMotorOutput, -_maxRadiansPerSecond), _maxRadiansPerSecond);
     changeMotorSpeeds = true;
   }
-
-//  SerialDebugger.print("PID leftIn   : ").print(_leftMotorInput).print(" PID rightIn   : ").println(_rightMotorInput);
-//  SerialDebugger.print("PID leftSet  : ").print(_leftMotorSetpoint).print(" PID rightSet  : ").println(_rightMotorSetpoint);
-//  SerialDebugger.print("PID leftOut  : ").print(_leftMotorOutput).print(" PID rightOut  : ").println(_rightMotorOutput);
-//  SerialDebugger.print("PID leftSpeed: ").print(_leftLastSpeed).print(" PID rightSpeed: ").println(_rightLastSpeed);
 
   // If the pids adjusted the motor speeds, apply the new speeds to the motor
   if (changeMotorSpeeds) {

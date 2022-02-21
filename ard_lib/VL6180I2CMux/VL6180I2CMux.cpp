@@ -19,7 +19,6 @@
  */
 
 #include "VL6180I2CMux.h"
-#include <SerialDebug.h>
 
 VL6180I2CMux::VL6180I2CMux(
   int sensorAddress, uint8_t numSensors, uint8_t muxPin0,
