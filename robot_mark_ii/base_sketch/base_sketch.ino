@@ -24,33 +24,52 @@
 
 // My includes
 #include <ButtonExecutor.h>
-#include <SerialDebug.h>
+#include <DebugMsgs.h>
+#include <UDPPrintWrapper.h>
 
 // Local includes
 #include "pin_assignments.h"
 #include "helper_methods.h"
+#include "network_hub.h"
 #include "behaviors.h"
-
-// This is the state used by the led callback
-struct LEDContext {
-  char ledState;
-};
-LEDContext ledContext;
 
 PixelRing* pixelRing;
 
 // This is the behavior defined for the robot
 Behavior* behavior;
 
+// This is the hub that connects to the wider network
+NetworkHub networkHub;
+
 // Create the button executor that will start/stop execution when button
 // is pressed.
 ButtonExecutor buttonExecutor;
 
 void setup() {
-  SerialDebugger.begin(9600);
+  Serial.begin(9600);
+  
+  // Replace the line below with this one to disable all debugging messages
+  DebugMsgs.disableAll();
+  DebugMsgs.enableLevel(DEBUG);
 
+  // Initialize the pixel ring
   pixelRing = initializePixelRing();
   pixelRing->start(RING_OFF);
+
+  // Set up remote udp port debugging
+  if (UDP_DEBUGGING) {
+    if (networkHub.start() == 0) {
+      DebugMsgs.println("Switching to debug messages through remote udp");
+      
+      UDPPrintWrapper* udpPrint =
+        new UDPPrintWrapper(networkHub.getUdpPort(DEBUG_UDP_PORT), UDP_TARGET_ADDRESS, UDP_TARGET_PORT);
+      
+      DebugMsgs.setPrint(udpPrint);
+      DebugMsgs.println("Starting debug messages through remote udp");
+    } else {
+      DebugMsgs.println("Error connecting to network, debug messages will continue local");
+    }
+  }
   
   // Setup the executor with the button pin and callbacks
   buttonExecutor.setup(
@@ -66,11 +85,7 @@ void loop() {
 // This is where the sketch should setup one time settings like pin modes.
 // It will be called just once when the executor is setup.
 void setupCallback() {
-  SerialDebugger.println("Sketch setup");
-
-  // Intialize the led callback state
-  pinMode(LED_PIN, OUTPUT);
-  ledContext.ledState = LOW;
+  DebugMsgs.println("Sketch setup");
 
   pixelRing->changeState(RING_WHITE_FADE);
 
@@ -82,10 +97,7 @@ void setupCallback() {
 // be called every time the button is pushed to start execution, before
 // execution is started.
 void startCallback() {
-  SerialDebugger.println("Sketch start");
-
-  // blink the led every half second
-  buttonExecutor.callbackEvery(500, applyLEDState, (void*)&ledContext);
+  DebugMsgs.println("Sketch start");
 
   // Start the behavior
   behavior->start(&buttonExecutor, pixelRing);
@@ -95,11 +107,7 @@ void startCallback() {
 // called whenever execution is ended (button push or request to abort
 // execution).
 void stopCallback() {
-  SerialDebugger.println("Sketch stop");
-
-  // Turn off the led, set everything to off
-  ledContext.ledState = LOW;
-  digitalWrite(LED_PIN, LOW);
+  DebugMsgs.println("Sketch stop");
 
   // Stop the behavior
   behavior->stop();
@@ -114,13 +122,4 @@ void idleCallback() {
 
 void abortExecution() {
   buttonExecutor.abortExecution();
-}
-
-void applyLEDState(void* context) {
-  // change led state
-  char ledState = ((LEDContext*)context)->ledState == LOW ? HIGH : LOW;
-  digitalWrite(LED_PIN, ledState);
-
-  // store state for next callback
-  ((LEDContext*)context)->ledState = ledState;
 }

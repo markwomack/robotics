@@ -35,6 +35,7 @@ void initializeEdgeSensors(CallbackContext* context);
 void initializeSurfaceSensors(CallbackContext* context);
 void initializePixelRing(CallbackContext* context);
 void resetEncoders(CallbackContext* context);
+long readEncoder(Motor motor, CallbackContext* context);
 
 void adjustMotorSpeeds(void* context);
 

@@ -22,7 +22,7 @@
 #include <inttypes.h>
 
 // My includes
-#include <SerialDebug.h>
+#include <DebugMsgs.h>
 #include <PololuQik2s9v1MotorManager.h>
 #include <MotorController.h>
 
@@ -109,6 +109,10 @@ void resetEncoders(CallbackContext* context) {
   context->motorManager->readAndResetEncoder(RIGHT_MOTOR);
 }
 
+long readEncoder(Motor motor, CallbackContext* context) {
+  return context->motorManager->readEncoder(motor);
+}
+
 void adjustMotorSpeeds(void* context) {
   CallbackContext* callbackContext = ((CallbackContext*)context);
 
@@ -121,11 +125,11 @@ void readEdgeSensors(void* context) {
   // read raw sensor values
   callbackContext->edgeSensors->read(callbackContext->edgeSensorValues);
 
-//  SerialDebugger.print("FL: ").print(callbackContext->edgeSensorValues[FL_EDGE] > 200 ? "EDGE" : "TBLE").print("  ");
-//  SerialDebugger.print("FR: ").println(callbackContext->edgeSensorValues[FR_EDGE] > 200 ? "EDGE" : "TBLE");
-//  SerialDebugger.print("RL: ").print(callbackContext->edgeSensorValues[RL_EDGE] > 200 ? "EDGE" : "TBLE").print("  ");
-//  SerialDebugger.print("RR: ").println(callbackContext->edgeSensorValues[RR_EDGE] > 200 ? "EDGE" : "TBLE");
-//  SerialDebugger.println();
+//  DebugMsgs.print("FL: ").print(callbackContext->edgeSensorValues[FL_EDGE] > 200 ? "EDGE" : "TBLE").print("  ");
+//  DebugMsgs.print("FR: ").println(callbackContext->edgeSensorValues[FR_EDGE] > 200 ? "EDGE" : "TBLE");
+//  DebugMsgs.print("RL: ").print(callbackContext->edgeSensorValues[RL_EDGE] > 200 ? "EDGE" : "TBLE").print("  ");
+//  DebugMsgs.print("RR: ").println(callbackContext->edgeSensorValues[RR_EDGE] > 200 ? "EDGE" : "TBLE");
+//  DebugMsgs.println();
 }
 
 void readSurfaceSensors(void* context) {
@@ -135,32 +139,38 @@ void readSurfaceSensors(void* context) {
   callbackContext->centerSurfaceSensors->read(callbackContext->centerSurfaceSensorValues);
   callbackContext->rearSurfaceSensors->read(callbackContext->rearSurfaceSensorValues);
   
-//  SerialDebugger.print("front: ").print(frontSurfaceSensorValues[0]).print('\t');
-//  SerialDebugger.print(frontSurfaceSensorValues[1]).println();
-//  SerialDebugger.print("center:").print(centerSurfaceSensorValues[0]).print('\t');
-//  SerialDebugger.print(centerSurfaceSensorValues[1]).print('\t');
-//  SerialDebugger.print(centerSurfaceSensorValues[2]).print('\t');
-//  SerialDebugger.print(centerSurfaceSensorValues[3]).print('\t');
-//  SerialDebugger.print(centerSurfaceSensorValues[4]).print('\t');
-//  SerialDebugger.print(centerSurfaceSensorValues[5]).println();
-//  SerialDebugger.print("rear:  ").print(rearSurfaceSensorValues[0]).print('\t');
-//  SerialDebugger.print(rearSurfaceSensorValues[1]).println();
-//  SerialDebugger.println();
+//  DebugMsgs.print("front: ").print(frontSurfaceSensorValues[0]).print('\t');
+//  DebugMsgs.print(frontSurfaceSensorValues[1]).println();
+//  DebugMsgs.print("center:").print(centerSurfaceSensorValues[0]).print('\t');
+//  DebugMsgs.print(centerSurfaceSensorValues[1]).print('\t');
+//  DebugMsgs.print(centerSurfaceSensorValues[2]).print('\t');
+//  DebugMsgs.print(centerSurfaceSensorValues[3]).print('\t');
+//  DebugMsgs.print(centerSurfaceSensorValues[4]).print('\t');
+//  DebugMsgs.print(centerSurfaceSensorValues[5]).println();
+//  DebugMsgs.print("rear:  ").print(rearSurfaceSensorValues[0]).print('\t');
+//  DebugMsgs.print(rearSurfaceSensorValues[1]).println();
+//  DebugMsgs.println();
 }
 
 void readDistanceSensors(void* context) {
   CallbackContext* callbackContext = ((CallbackContext*)context);
   
-  SerialDebugger.print("front: ");
-  for (uint8_t x = 0; x < NUM_FRONT_DISTANCE_SENSORS; x++) {
-    SerialDebugger.print(x).print(": ").print(callbackContext->frontDistanceSensorMux->readDistance(x)).print(", ");
+  DebugMsgs.print("front: ");
+  for (int x = 0; x < NUM_FRONT_DISTANCE_SENSORS; x++) {
+    DebugMsgs.print(x);
+    DebugMsgs.print(": ");
+    DebugMsgs.print(callbackContext->frontDistanceSensorMux->readDistance(x));
+    DebugMsgs.print(", ");
   }
-  SerialDebugger.println();
-  SerialDebugger.print("rear:  ");
-  for (int8_t x = 0; x < NUM_REAR_DISTANCE_SENSORS; x++) {
-    SerialDebugger.print(x).print(": ").print(callbackContext->rearDistanceSensorMux->readDistance(x)).print(", ");
+  DebugMsgs.println();
+  DebugMsgs.print("rear:  ");
+  for (int x = 0; x < NUM_REAR_DISTANCE_SENSORS; x++) {
+    DebugMsgs.print(x);
+    DebugMsgs.print(": ");
+    DebugMsgs.print(callbackContext->rearDistanceSensorMux->readDistance(x));
+    DebugMsgs.print(", ");
   }
-  SerialDebugger.println().println();
+  DebugMsgs.println().println();
 }
 
 void adjustPixelRing(void* context) {
@@ -170,7 +180,6 @@ void adjustPixelRing(void* context) {
 }
 
 void calibrateSurfaceSensors(CallbackContext* context) {
-  digitalWrite(LED_PIN, HIGH); // turn on LED to indicate we are in calibration mode
 
   // 2.5 ms RC read timeout (default) * 10 reads per calibrate() call
   // = ~25 ms per calibrate() call.
@@ -182,21 +191,12 @@ void calibrateSurfaceSensors(CallbackContext* context) {
     context->rearSurfaceSensors->calibrate();
   }
   
-  digitalWrite(LED_PIN, LOW); // flicker led to show we are half way done
-  delay(50);
-  digitalWrite(LED_PIN, HIGH);
-  delay(50);
-  digitalWrite(LED_PIN, LOW);
-  delay(50);
-  digitalWrite(LED_PIN, HIGH);
-  
   for (uint16_t i = 0; i < 200; i++)
   {
     context->frontSurfaceSensors->calibrate();
     context->centerSurfaceSensors->calibrate();
     context->rearSurfaceSensors->calibrate();
   }
-  digitalWrite(LED_PIN, LOW); // turn off led to indicate calibration done.
 }
 
 void stopMotors(CallbackContext* context) {

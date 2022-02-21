@@ -22,19 +22,18 @@
 #define ROBOT_CONSTANTS_H
 
 #include <inttypes.h>
+#include <IPAddress.h>
 
 // These are constants based on the physical build of the robot.
 // Your robot build may vary.
 
  // wheel diameter in meters (31 mm)
 const double WHEEL_DIAM_M = 0.031;
-const double WHEEL_CIRCUMFERENCE_M = 2.0 * PI * (WHEEL_DIAM_M/2.0); // C=2*pi*r
+const double WHEEL_CIRCUMFERENCE_M = PI * WHEEL_DIAM_M; // C=2*pi*r -> C=pi*2r -> C=pi*D
 
 // distance between wheels,center to center (83 mm)
 const double BASE_DIST_M = 0.083;
-const double BASE_CIRCUMFERENCE_M = 2.0 * PI * (BASE_DIST_M/2.0);
-
-const double WHEEL_ROTATIONS_PER_360_DEGREES = BASE_CIRCUMFERENCE_M/WHEEL_CIRCUMFERENCE_M;
+const double BASE_CIRCUMFERENCE_M = PI * BASE_DIST_M;
 
 // encoder ticks for single wheel revolution
 const double TICKS_PER_ROTATION = 3000.0; // 250:1 * 12 ticks
@@ -56,15 +55,19 @@ const double MAX_ROTATIONS_PER_SECOND = MAX_TICKS_PER_SECOND / TICKS_PER_ROTATIO
 
 // This is the max meters per second when run at full speed. Just for reference,
 // code will use radians.
-const double MAX_METERS_PER_SECOND = MAX_ROTATIONS_PER_SECOND * (PI * WHEEL_DIAM_M);
+const double MAX_METERS_PER_SECOND = MAX_ROTATIONS_PER_SECOND * WHEEL_CIRCUMFERENCE_M;
 
 // This is the max radians per second when run at full speed.
 // There are 2 radians in 360 degrees.
 const double MAX_RADIANS_PER_SECOND = MAX_ROTATIONS_PER_SECOND * 2;
 
 // When spinning in place, use this tick measurement to measure movement by degree.
-const double TICKS_PER_360_DEGREES = WHEEL_ROTATIONS_PER_360_DEGREES * TICKS_PER_ROTATION;
-const double TICKS_PER_DEGREE = TICKS_PER_360_DEGREES/360.0;
+const double WHEEL_ROTATIONS_PER_BASE_ROTATION = BASE_CIRCUMFERENCE_M/WHEEL_CIRCUMFERENCE_M;
+const double TICKS_PER_BASE_ROTATION = WHEEL_ROTATIONS_PER_BASE_ROTATION * TICKS_PER_ROTATION;
+const double TICKS_PER_BASE_DEGREE = TICKS_PER_BASE_ROTATION/360.0;
+
+// When moving forward, use this tick measurement to measure movement by millimeter
+const double TICKS_PER_MM = TICKS_PER_ROTATION/(WHEEL_CIRCUMFERENCE_M * 1000.0);
 
 // Constants used with PID controller in the motor controller
 const double KP(0.25);
@@ -94,5 +97,13 @@ const uint8_t RR_EDGE = 3;
 const uint16_t EDGE_THRESHOLD = 1000;
 
 const uint16_t NUM_PIXELS_ON_RING = 16;
+
+const bool UDP_DEBUGGING = true;
+const unsigned int DEBUG_UDP_PORT = 1234;
+
+const IPAddress UDP_TARGET_ADDRESS = IPAddress(192, 168, 0, 102);
+//const IPAddress UDP_TARGET_ADDRESS = IPAddress(192, 168, 0, 101);
+const unsigned int UDP_TARGET_PORT = 54321;
+        
 
 #endif

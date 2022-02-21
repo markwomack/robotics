@@ -63,6 +63,10 @@ void PixelRing::run(void) {
 }
 
 void PixelRing::changeState(RingState newState) {
+  if (_ringState == newState) {
+    return;
+  }
+  
   setRingStateAndBaseColor(newState);
 
   switch(_ringState) {

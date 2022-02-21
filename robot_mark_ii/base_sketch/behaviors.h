@@ -28,6 +28,18 @@
 #include "callback_context.h"
 #include "pixel_ring.h"
 
+enum MovementState {
+  STOPPED,
+  GOFORWARD,
+  GOREVERSE,
+  TURN_F_LEFT,
+  TURN_F_RIGHT,
+  TURN_R_LEFT,
+  TURN_R_RIGHT,
+  SPIN_LEFT,
+  SPIN_RIGHT
+};
+
 class Behavior {
   public:
     Behavior() { }
@@ -39,6 +51,19 @@ class Behavior {
 
   protected:
     CallbackContext _context;
+    MovementState _movementState;
+    double _targetTicks;
+
+    // Shared movement methods
+    void stopMovement();
+    void spin(int degrees);
+    void spinFast(int degrees);
+    void goForward(unsigned int millimeters = 0);
+    void goReverse(unsigned int millimeters = 0);
+    void turnForwardRight();
+    void turnForwardLeft();
+    void turnReverseLeft();
+    void turnReverseRight();
 };
 
 Behavior* createBehavior();
