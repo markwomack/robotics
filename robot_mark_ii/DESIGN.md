@@ -25,6 +25,7 @@ an exercise to the reader.</p>
 - [5v power bank battery](https://www.amazon.com/gp/product/B07K6HJTK2)
 - [USB cable slim connector](https://www.amazon.com/gp/product/B01MZ8RA3A)
 - [Pololu mini pushbutton switch (2)](https://www.pololu.com/product/1400)
+- [Adafruit AirLift ESP32 WIFI Co-Processor](https://www.adafruit.com/product/4201)
 
 <p>The VL6180X ToF distance sensors are mounted on a custom PCB board that is designed to use a multiplexer to choose which sensor
 to access on the I2C bus. This is required since the sensors all have the same I2C address.</p>
@@ -67,6 +68,15 @@ the Teensy, the Qik, and all of the sensors. The 7.5v regulator steps up the 5v 
 The 7.5 regulator is connected to the Qik motor controller, which passes the power to the motors</p>
 <p>The 5v regulator can deliver up to 1A in current which is more than sufficient for the electronics. The 7.5v regulator
 can provide up to 3A current which much greater than the motor stall current of .75A (1.5A for both motors combined).</p>
+
+### WIFI
+
+<p>Beatrice connects to the internet via the Adafruit ESP32 WIFI Co-Processor breakout board. It is connected to the Teensy
+through the SPI interface, and a custom version of the Arduino WiFiNINA library is used to allow different pin locations.
+The internet connection is used to send debugging messages to a remote console, which greatly aids in the writing and
+debugging of robot behaviors. It is much harder to sense objects or program movement with a USB cable connected to the back
+of the robot's Teensy. However, this portion of the build is optional, but greatly recommended. Please see the ArduinoLogging
+library for an example of a setup on a remote computer to receive messages from the robot.</p>
 
 ### Sensors
 [COMING SOON]
