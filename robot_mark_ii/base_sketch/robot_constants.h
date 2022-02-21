@@ -98,12 +98,12 @@ const uint16_t EDGE_THRESHOLD = 1000;
 
 const uint16_t NUM_PIXELS_ON_RING = 16;
 
-const bool UDP_DEBUGGING = true;
-const unsigned int DEBUG_UDP_PORT = 1234;
+// Network related constants
 
-const IPAddress UDP_TARGET_ADDRESS = IPAddress(192, 168, 0, 102);
-//const IPAddress UDP_TARGET_ADDRESS = IPAddress(192, 168, 0, 101);
+// Remote UDP debugging disabled
+const bool UDP_DEBUGGING = false;
+const unsigned int DEBUG_UDP_PORT = 1234;
+const IPAddress UDP_TARGET_ADDRESS = IPAddress(192, 168, 0, 101);
 const unsigned int UDP_TARGET_PORT = 54321;
         
-
 #endif
