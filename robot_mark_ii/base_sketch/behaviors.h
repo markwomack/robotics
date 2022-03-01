@@ -22,7 +22,7 @@
 #define BEHAVIORS_H
 
 // My includes
-#include <ButtonExecutor.h>
+#include <TaskManager.h>
 
 // Local includes
 #include "callback_context.h"
@@ -45,7 +45,7 @@ class Behavior {
     Behavior() { }
     
     virtual void initialize();
-    virtual void start(ButtonExecutor* buttonExecutor, PixelRing* pixelRing);
+    virtual void start(TaskManager* taskManager, PixelRing* pixelRing);
     virtual void doBehavior();
     virtual void stop();
 

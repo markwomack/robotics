@@ -18,9 +18,6 @@
  *      MA 02110-1301, USA.
  */
 
-// Third party includes
-#include <PID_v1.h>
-
 // My includes
 #include <DebugMsgs.h>
 #include <MotorController.h>
@@ -76,22 +73,22 @@ enum Orientation {
   FRONT,
   REAR
 };
-
-// Run the behavior stored in the context pointer.
-void runBehavior(void* context) {  
-  Behavior* behavior = (Behavior*)context;
-  behavior->doBehavior();
-}
     
 const int ACQUISITION_THRESHOLD(50);
 const int DISTANCE_THRESHOLD(255);
 
 const int MAX_JIG(2);
 
+// Run the behavior stored in the context pointer.
+void runBehavior(void* context) {  
+  Behavior* behavior = (Behavior*)context;
+  behavior->doBehavior();
+}
+
 class PushOffTableTopBehavior : public Behavior {
   protected:
     PushObjectOffTableState _logicState;
-    ButtonExecutor* _buttonExecutor;
+    TaskManager* _taskManager;
     int _jiggerCount;
     FieldLocation _lastFrontLocation;
     
@@ -111,9 +108,9 @@ class PushOffTableTopBehavior : public Behavior {
     initializePixelRing(&_context);
   }
 
-  void start(ButtonExecutor* buttonExecutor, PixelRing* pixelRing) {
+  void start(TaskManager* taskManager, PixelRing* pixelRing) {
 
-    _buttonExecutor = buttonExecutor;
+    _taskManager = taskManager;
     
     // Start the motor controller
     _context.motorController->start();
@@ -123,10 +120,10 @@ class PushOffTableTopBehavior : public Behavior {
     readEdgeSensors((void*)&_context);
     
     // Register the methods used when running this behavior
-    buttonExecutor->callbackEvery(50, readEdgeSensors, (void*)&_context);
-    buttonExecutor->callbackEvery(10, adjustMotorSpeeds, (void*)&_context);
-    buttonExecutor->callbackEvery(50, adjustPixelRing, (void*)&_context);
-    buttonExecutor->callbackEvery(10, runBehavior, (void*)this);
+    taskManager->callbackEvery(50, readEdgeSensors, (void*)&_context);
+    taskManager->callbackEvery(10, adjustMotorSpeeds, (void*)&_context);
+    taskManager->callbackEvery(50, adjustPixelRing, (void*)&_context);
+    taskManager->callbackEvery(10, runBehavior, (void*)this);
   }
   
   void stop() {
@@ -307,7 +304,7 @@ class PushOffTableTopBehavior : public Behavior {
         DebugMsgs.println("DONE!");
         stop();
         stopMovement();
-        _buttonExecutor->abortExecution();
+        _taskManager->stop();
         break;
     }
   }
@@ -392,7 +389,7 @@ class PushOffTableTopBehavior : public Behavior {
   void handleSpinSeekingState(void) {
     switch(_movementState) {
       case STOPPED: {
-        spin(-190);
+        spin(-270);
       }
       break;
 
@@ -413,7 +410,7 @@ class PushOffTableTopBehavior : public Behavior {
           if (currentTicks >= _targetTicks) {
             DebugMsgs.println("Spin seeking did not find object, switch back to seeking and go forward");
             _logicState = SEEKING;
-            goForward(150);
+            goForward(200);
           }
         }
       }
@@ -599,17 +596,17 @@ class StayOnTableTopBehavior : public Behavior {
     initializePixelRing(&_context);
   }
 
-  void start(ButtonExecutor* buttonExecutor, PixelRing* pixelRing) {
+  void start(TaskManager* taskManager, PixelRing* pixelRing) {
 
     // Start the motor controller
     _context.motorController->start();
     _context.pixelRing = pixelRing;
 
     // Register the methods used when running this behavior
-    buttonExecutor->callbackEvery(50, readEdgeSensors, (void*)&_context);
-    buttonExecutor->callbackEvery(50, adjustMotorSpeeds, (void*)&_context);
-    buttonExecutor->callbackEvery(50, adjustPixelRing, (void*)&_context);
-    buttonExecutor->callbackEvery(100, runBehavior, (void*)this);
+    taskManager->callbackEvery(50, readEdgeSensors, (void*)&_context);
+    taskManager->callbackEvery(50, adjustMotorSpeeds, (void*)&_context);
+    taskManager->callbackEvery(50, adjustPixelRing, (void*)&_context);
+    taskManager->callbackEvery(100, runBehavior, (void*)this);
   }
   
   // Defines the behavior of the robot, a set of states that are cycled

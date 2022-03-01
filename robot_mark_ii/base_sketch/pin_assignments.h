@@ -40,8 +40,8 @@ const uint8_t WIFI_SPI_SCK0_PIN        = 14; // SPI SCK0 used by Wifi
 const uint8_t WIFI_RESET_PIN           = 15; // reset pin used by Wifi
 const uint8_t WIFI_BUSY_PIN            = 16; // busy pin used by Wifi
 const uint8_t RL_EDGE_SENSOR_PIN       = 17; // rear-left edge sensor
-                                     //= 18; // SDA0 I2C connected to FRONT_MUX
-                                     //= 19; // SCL0 I2C connected to FRONT_MUX
+                                     //= 18; // SDA0 I2C (aka Wire) connected to FRONT_MUX
+                                     //= 19; // SCL0 I2C (aka Wire) connected to FRONT_MUX
 const uint8_t FL_SURFACE_SENSOR_PIN    = 20; // front-left surface sensor
 const uint8_t FR_SURFACE_SENSOR_PIN    = 21; // front-right surface sensor
 const uint8_t RR_SURFACE_SENSOR_PIN    = 22; // rear-right surface sensor
@@ -59,8 +59,8 @@ const uint8_t BUTTON_PIN               = 33; // start/stop button
 const uint8_t ENCODER_L_PHASE_B_PIN    = 34; // left encoder phase b signal
 const uint8_t ENCODER_L_PHASE_A_PIN    = 35; // left encoder phase a signal
 const uint8_t FL_EDGE_SENSOR_PIN       = 36; // front_left edge sensor
-                                     //= 37; // SCL1 I2C connected to REAR_MUX
-                                     //= 38; // SDA1 I2C connected to REAR_MUX
+                                     //= 37; // SCL1 I2C (aka Wire1) connected to REAR_MUX
+                                     //= 38; // SDA1 I2C (aka Wire1) connected to REAR_MUX
 const uint8_t PIXEL_RING_PIN           = 39; // pixel ring data pin
 
 #endif

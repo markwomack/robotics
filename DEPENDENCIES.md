@@ -9,7 +9,8 @@
 [Adafruit WiFiNINA](https://github.com/adafruit/WiFiNINA)</br>
 *^Must use the above version to allow different pin locations</br>
 [PID controller](https://github.com/br3ttb/Arduino-PID-Library)</br>
-[ArduinoLogging](https://github.com/markwomack/ArduinoLogging)</p>
+[ArduinoLogging](https://github.com/markwomack/ArduinoLogging)</br>
+[TaskManager](https://github.com/markwomack/TaskManager)</p>
 
 <p>Some of these libraries might already be installed in the Arduino
 IDE, so check first.</p>

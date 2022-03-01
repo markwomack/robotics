@@ -23,7 +23,7 @@
 #include <inttypes.h>
 
 // My includes
-#include <ButtonExecutor.h>
+#include <TaskManager.h>
 #include <DebugMsgs.h>
 #include <UDPPrintWrapper.h>
 
@@ -41,16 +41,16 @@ Behavior* behavior;
 // This is the hub that connects to the wider network
 NetworkHub networkHub;
 
-// Create the button executor that will start/stop execution when button
+// Create the taskManager that will start/stop execution when button
 // is pressed.
-ButtonExecutor buttonExecutor;
+TaskManager taskManager;
 
 void setup() {
   Serial.begin(9600);
   
-  // Replace the line below with this one to disable all debugging messages
   DebugMsgs.disableAll();
-  DebugMsgs.enableLevel(DEBUG);
+  // Uncomment this line to enable debug msgs
+  //DebugMsgs.enableLevel(DEBUG);
 
   // Initialize the pixel ring
   pixelRing = initializePixelRing();
@@ -71,15 +71,15 @@ void setup() {
     }
   }
   
-  // Setup the executor with the button pin and callbacks
-  buttonExecutor.setup(
+  // Setup the task manager with the button pin and callbacks
+  taskManager.setup(
     BUTTON_PIN, HIGH, setupCallback, startCallback, stopCallback, idleCallback);
 }
 
 void loop() {
-  // Allow the executor to perform a loop call to check for button presses
+  // Allow the task to perform a loop call to check for button presses
   // and to execute the sketch callbacks
-  buttonExecutor.loop();
+  taskManager.loop();
 }
 
 // This is where the sketch should setup one time settings like pin modes.
@@ -100,7 +100,7 @@ void startCallback() {
   DebugMsgs.println("Sketch start");
 
   // Start the behavior
-  behavior->start(&buttonExecutor, pixelRing);
+  behavior->start(&taskManager, pixelRing);
 }
 
 // This is where the sketch should handle the ending of execution.  It will be
@@ -118,8 +118,4 @@ void stopCallback() {
 // Called when the executor is not executing.
 void idleCallback() {
   pixelRing->run();
-}
-
-void abortExecution() {
-  buttonExecutor.abortExecution();
 }
