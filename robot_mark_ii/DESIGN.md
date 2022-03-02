@@ -27,9 +27,14 @@ an exercise to the reader.</p>
 - [Pololu mini pushbutton switch (2)](https://www.pololu.com/product/1400)
 - [Adafruit AirLift ESP32 WIFI Co-Processor](https://www.adafruit.com/product/4201)
 
-<p>The VL6180X ToF distance sensors are mounted on a custom PCB board that is designed to use a multiplexer to choose which sensor
-to access on the I2C bus. This is required since the sensors all have the same I2C address.</p>
+### Chassis
 
+<p>The chassis is a collection of 3D printed parts for the mounted sensors, a couple of custom PCB boards, and several protoboards
+  all put together to form the body of the robot. The chassis is designed to be symmetrical along the axis of the differential drive
+  wheels. The profile and sensors of the robot are the same, front to back, flipping on the wheel axis. One side has been arbritrarily
+  chosen to be the 'front', but future coding could treat each side equally, eliminating any need for the robot to turn around,
+  instead just switching the 'front' in the software.</p>
+  
 ### Microcontroller
 
 <p>The Teensy 3.5 is the heart of the robot. It drives all of the sensors and behaviors.</p>
@@ -41,8 +46,8 @@ to access on the I2C bus. This is required since the sensors all have the same I
   same pin form factor, but the pins are arranged differently. You will have to take this into account when wiring, and the 
   pin_assignments.h file in the code will need to be updated accordingly. Second, the Teensy 4.1 pins are NOT 5v tolerant as 
   they are for the 3.5. You will have to use 3.3v for all of the connections, and will need to have a 3.3v voltage regulator
-  instead of the 5v voltage regulator. [Pololu provides a 3.3v voltage regulator](https://www.pololu.com/product/2122).</p>
-  Though I have not tried it as of yet, all of the electronic components should function correctly using 3.3v instead of 5v.
+  instead of the 5v voltage regulator. [Pololu provides a 3.3v voltage regulator](https://www.pololu.com/product/2122).
+  Though I have not tried it as of yet, all of the electronic components should function correctly using 3.3v instead of 5v.</p>
 
 ### Motor controller
 
@@ -62,21 +67,70 @@ revolution. This will provide a high level of accuracy in the odometry.</p>
 ### Power
 
 <p>The power to Beatrice is provied by a 5v power bank connected via a modified USB cable to the 5v pushbutton power switch.
-The power bank can provide up to 2A current. The pushbutton switch provides reverse voltage protection. The power flows to
+The power bank can provide up to 2A of current. The pushbutton switch provides reverse voltage protection. The power flows to
 the robot from the switch to two different voltage regulators. The 5v regulator provides power to all of the electronics:
 the Teensy, the Qik, and all of the sensors. The 7.5v regulator steps up the 5v to 7.5v to provide more power to the motors.
-The 7.5 regulator is connected to the Qik motor controller, which passes the power to the motors</p>
+The 7.5 regulator is connected to the Qik motor controller, which passes the power to the motors.</p>
 <p>The 5v regulator can deliver up to 1A in current which is more than sufficient for the electronics. The 7.5v regulator
 can provide up to 3A current which much greater than the motor stall current of .75A (1.5A for both motors combined).</p>
 
-### WIFI
+### WIFI (optional, but recommended)
 
 <p>Beatrice connects to the internet via the Adafruit ESP32 WIFI Co-Processor breakout board. It is connected to the Teensy
-through the SPI interface, and a custom version of the Arduino WiFiNINA library is used to allow different pin locations.
-The internet connection is used to send debugging messages to a remote console, which greatly aids in the writing and
-debugging of robot behaviors. It is much harder to sense objects or program movement with a USB cable connected to the back
-of the robot's Teensy. However, this portion of the build is optional, but greatly recommended. Please see the ArduinoLogging
-library for an example of a setup on a remote computer to receive messages from the robot.</p>
+  through the SPI interface, and a custom Adafruit version of the Arduino WiFiNINA library is used to allow different pin
+  locations. The internet connection is used to send debugging messages to a remote console, which greatly aids in the
+  writing and debugging of robot behaviors. It is much harder to sense objects or program movement with a USB cable
+  connected to the back of the robot's Teensy. However, this portion of the build is optional, but greatly recommended.
+  Please see the ArduinoLogging library for an example of a setup on a remote computer to receive messages from the robot.</p>
 
 ### Sensors
-[COMING SOON]
+
+<p>Beatrice is outfitted with different sets of sensors, each for a different purpose.</p>
+
+#### Edge Sensors
+
+<p>Extending out from each corner of the robot are 4 Pololu IR sensors, one for each corner. These are meant to detect
+  edges of the tabletop on which the robot is operating. There is no special calibration performed for these sensors.
+  Once the value goes above a certain threshold and 'edge' is detected. Each sensor is directly connected to a pin on
+  the Teensy, which reads the value periodically when required by the behavior.</p>
+
+#### Distance Sensors
+
+<p>Wrapping around the robot are 10 VL6180X Time-of-Flight distance sensors (3 front, 3 rear, 2 right, 2 left). These
+  are meant to detect objects in proximity to the robot. The maximum range of the VL6180X is 60cm, but in practice it
+  is more in the 20-30cm range. Each sensor is an I2C device, and values are requested and read using the I2C bus.
+  Unfortunately, each sensor hasthe same I2C address, which in turn requires a Multiplexer chip to select the specific
+  sensor before interacting with it. For Beatrice this is done using a custom PCB board that is designed to have the
+  multiplexer chip and 5 sensors mounted directly on the board. The board is then incorporated into the body of
+  the chassis. There is one PCB for the front, and one PCB for the rear, with matching configurations. A separate
+  I2C bus and set of selector pins on the Teesny are used to control each board in turn. While the sensors could be
+  configured to run in 'continous' mode, currently the code samples distance measurements as needed for the specific
+  task in hand. This avoids a periodic task running over its alloted time to execute, and overlapping signals each
+  sensor sends out to measure distance. Future code could be written to better time the measurments for each
+  sensor so that they do not intefere with each other.</p>
+
+#### Line Tracking Sensors
+
+<p>Underneath the robot, mounted on a 3D printed under-carriage, are more Pololu IR sensors. These are meant to detect
+  line patterns on the tabletop or a maze. There are 10 sensors in total, arranged in lines: 2 at the front, 6 across
+  the center, and 2 more at the rear. This arrangement makes detecting horizontal and vertical line patterns more
+  efficient. Similar to the edge sensors, each sensor is connected to a pin on the Teensy. However, unlike the edge
+  sensors, the line sensors require some level of calibration before use to detect lines. While calibrating, the robot
+  needs to be moved over the lightest and darkest values found on the tabletop or maze. Once the calibration is completed,
+  the calibrated values will then be used in detecting lines.</p>
+
+### Robot Control
+
+<p>The 5v pushbutton power switch will turn Beatrice on and off, but there are is another button to actually control
+  the start and stop of the robot behavior. Beatrice uses the TaskManager library to monitor a pin on the Teensy that
+  is connected to this pushbutton. When first turned on Beatrice will be in idle mode, with the PixelRing pulsing white.
+  When the pushbutton is pressed, the programmed behavior will start. When the pushbutton is pressed again, the behavior
+  will be stopped. Pushing the button again will start the behavior, now initialized to forget the previous execution.</p>
+<p>Because Beatrice can perform several different behaviors, there is another push button that can be used to select the
+  behavior to execute next time the start button is pressed. Each behavior type is numbered, and when selecting, the
+  selected behavior number is displayed on the PixelRing by the matching number of LEDs.</p>
+  
+### State display
+
+<p>Beatrice uses the Adafruit PixelRing to display its current state. When idle it will pulse white. While running it will
+  update the PixelRing as it executes the behavior.
