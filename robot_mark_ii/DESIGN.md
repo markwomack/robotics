@@ -1,4 +1,4 @@
-# Design Robot Mark II - 'Beatrice'
+# Design - Robot Mark II - 'Beatrice'
 
 This document outlines the design of the Mark II 'Beatrice' robot.
 
