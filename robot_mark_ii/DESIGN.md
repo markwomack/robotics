@@ -51,9 +51,9 @@ an exercise to the reader.</p>
 
 ### Motor controller
 
-<p>The Pololu Qik 2s9v1 motor controller is a simple to use controller that can drive two motors. It uses serial to receive
-  motor commands, and one of the Teensy serial ports is dedicated to the Qik. While the controller run on 5v, it provides
-  a separate power source to the motors, which on this robot is 7.5v (see Power section below).</p>
+<p>The Pololu Qik 2s9v1 motor controller is a simple to use controller that can drive two motors. It uses a serial port to
+  receive motor commands, and one of the Teensy serial ports is dedicated to the Qik. While the controller run on 5v,
+  it provides for a separate power source to the motors, which on this robot is 7.5v (see Power section below).</p>
 
 ### Motors and encoders
 
