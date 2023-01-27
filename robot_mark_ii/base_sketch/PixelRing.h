@@ -3,8 +3,8 @@
 // See accompanying LICENSE file for details.
 //
 
-#ifndef PIXEL_RING_H
-#define PIXEL_RING_H
+#ifndef PIXELRING_H
+#define PIXELRING_H
 
 // Arduino includes
 #include <inttypes.h>
@@ -28,7 +28,9 @@ struct RingColor {
 
 class PixelRing {
   public:
-    PixelRing(uint8_t pin, uint16_t numPixels);
+    PixelRing() {};
+
+    void initialize(void);
     void start(RingState ringState);
     void run(void);
     void changeState(RingState newState);
@@ -47,4 +49,4 @@ class PixelRing {
     int getIndexWithOffset(int offset);
 };
 
-#endif
+#endif // PIXELRING_H

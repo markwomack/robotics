@@ -4,12 +4,14 @@
 //
 
 // Local includes
-#include "pixel_ring.h"
+#include "PixelRing.h"
+#include "pin_assignments.h"
+#include "robot_constants.h"
 
-PixelRing::PixelRing(uint8_t pin, uint16_t numPixels) {
-  _numPixels = numPixels;
+void PixelRing::initialize(void) {
+  _numPixels = NUM_PIXELS_ON_RING;
   _ringState = RING_OFF;
-  _neoPixel = new Adafruit_NeoPixel(_numPixels, pin, NEO_GRBW + NEO_KHZ800);
+  _neoPixel = new Adafruit_NeoPixel(_numPixels, PIXEL_RING_PIN, NEO_GRBW + NEO_KHZ800);
   _neoPixel->begin();
   _neoPixel->clear();
   _neoPixel->show();

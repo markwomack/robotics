@@ -3,7 +3,7 @@
 // See accompanying LICENSE file for details.
 //
 
-#include "network_hub.h"
+#include "NetworkHub.h"
 
 #include <SPI.h>
 #include <WiFiNINA.h>

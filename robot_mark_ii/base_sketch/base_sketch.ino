@@ -9,26 +9,52 @@
 
 // My includes
 #include <TaskManager.h>
+#include <Task.h>
 #include <DebugMsgs.h>
 #include <UDPPrintWrapper.h>
 
 // Local includes
 #include "pin_assignments.h"
-#include "helper_methods.h"
-#include "network_hub.h"
-#include "behaviors.h"
+#include "NetworkHub.h"
+#include "DistanceSensors.h"
+#include "EdgeSensors.h"
+#include "MotorsAndEncoders.h"
+#include "PixelRing.h"
+#include "SurfaceSensors.h"
+#include "BehaviorTask.h"
+#include "StayOnTableTopTask.h"
+#include "PushOffTableTopTask.h"
+#include "AdjustPixelRingTask.h"
 
-PixelRing* pixelRing;
+// Simple idle task to fade the pixel ring white
+class IdleTask : public AdjustPixelRingTask {
+  public:
+    IdleTask() {};
+    
+    void start(void) {
+      _pixelRing->changeState(RING_WHITE_FADE);
+    };
+};
+IdleTask idleTask;
+
+// All of the sensors, motors, and pixel ring
+EdgeSensors edgeSensors;
+DistanceSensors distanceSensors;
+MotorsAndEncoders motorsAndEncoders;
+PixelRing pixelRing;
+SurfaceSensors surfaceSensors;
 
 // This is the behavior defined for the robot
-Behavior* behavior;
+BehaviorTask* behaviorTask;
 
 // This is the hub that connects to the wider network
 NetworkHub networkHub;
 
-// Create the taskManager that will start/stop execution when button
-// is pressed.
-TaskManager taskManager;
+// Creates the behavior task to be executed
+BehaviorTask* createBehaviorTask(void) {
+  return new PushOffTableTopTask();
+  //return new StayOnTableTopTask();
+}
 
 void setup() {
   Serial.begin(9600);
@@ -36,11 +62,7 @@ void setup() {
   DebugMsgs.disableAll();
   // Uncomment this line to enable debug msgs
   //DebugMsgs.enableLevel(DEBUG);
-
-  // Initialize the pixel ring
-  pixelRing = initializePixelRing();
-  pixelRing->start(RING_OFF);
-
+   
   // Set up remote udp port debugging
   if (UDP_DEBUGGING) {
     if (networkHub.start() == 0) {
@@ -56,51 +78,33 @@ void setup() {
     }
   }
   
-  // Setup the task manager with the button pin and callbacks
-  taskManager.setup(
-    BUTTON_PIN, HIGH, setupCallback, startCallback, stopCallback, idleCallback);
+  edgeSensors.initialize();
+  distanceSensors.initialize();
+  motorsAndEncoders.initialize();
+  pixelRing.initialize();
+  surfaceSensors.initialize();
+
+  // get the behavior task to execute
+  behaviorTask = createBehaviorTask();
+
+  // set all the sensors and stuff
+  behaviorTask->setEdgeSensors(&edgeSensors);
+  behaviorTask->setDistanceSensors(&distanceSensors);
+  behaviorTask->setMotorsAndEncoders(&motorsAndEncoders);
+  behaviorTask->setPixelRing(&pixelRing);
+  behaviorTask->setSurfaceSensors(&surfaceSensors);
+
+  idleTask.setPixelRing(&pixelRing);
+  
+  // add tasks into the task manager
+  taskManager.addIdleTask(&idleTask, 50);
+  taskManager.addTask(behaviorTask, 10);
+
+  // start monitoring the button to start the tasks
+  taskManager.startMonitoringButton(BUTTON_PIN, HIGH);
 }
 
 void loop() {
-  // Allow the task to perform a loop call to check for button presses
-  // and to execute the sketch callbacks
-  taskManager.loop();
-}
-
-// This is where the sketch should setup one time settings like pin modes.
-// It will be called just once when the executor is setup.
-void setupCallback() {
-  DebugMsgs.println("Sketch setup");
-
-  pixelRing->changeState(RING_WHITE_FADE);
-
-  // Create the behavior
-  behavior = createBehavior();
-}
-
-// This is where the sketch should set initial state before execution.  It will
-// be called every time the button is pushed to start execution, before
-// execution is started.
-void startCallback() {
-  DebugMsgs.println("Sketch start");
-
-  // Start the behavior
-  behavior->start(&taskManager, pixelRing);
-}
-
-// This is where the sketch should handle the ending of execution.  It will be
-// called whenever execution is ended (button push or request to abort
-// execution).
-void stopCallback() {
-  DebugMsgs.println("Sketch stop");
-
-  // Stop the behavior
-  behavior->stop();
-
-  pixelRing->changeState(RING_WHITE_FADE);
-}
-
-// Called when the executor is not executing.
-void idleCallback() {
-  pixelRing->run();
+  // Execute tasks
+  taskManager.update();
 }
