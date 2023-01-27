@@ -53,6 +53,8 @@ int VL6180I2CMux::initializeSensors() {
   int retVal = 0;
   for (uint8_t x = 0; x < _numSensors; x++) {
     selectSensor(x);
+    // slight pause to make sure the select is complete
+    delay(100);
     _sensor->init();
     _sensor->configureDefault();
     _sensor->setTimeout(100);
