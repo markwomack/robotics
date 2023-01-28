@@ -1,7 +1,11 @@
 # Base Sketch
 
 This is the base sketch for the Mark II 'Beatrice' robot that supports all of the behaviors
-it has been programmed to perform.
+it has been programmed to perform. Beatrice is meant to be an all-around robot for 
+different challenges such as the
+[HBRC TableTop and A-Mazing LineBot challenges](https://www.hbrobotics.org/index.php/challenges/).
+Beatrice is still a work-in-progress, and more behaviors will be added as they are
+implemented.
 
 ## Files
 
