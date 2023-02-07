@@ -6,48 +6,53 @@
 #ifndef MotorManager_h
 #define MotorManager_h
 
+// Arduino includes
 #include <inttypes.h>
-#include <Encoder.h>
+
+// Local includes
+#include "MotorEncoder.h"
 
 enum Motor {
   LEFT_MOTOR,
   RIGHT_MOTOR
 };
 
+/*
+ * Defines the interface for motor management.
+ */
 class MotorManager
 {
 
 public:
+  MotorManager(){};
+
   /*
    * Sets the speed of the given motor. Speed is expected to be a 
    * value between -1 and 1.
    */
-
   virtual void setMotorSpeed(Motor motor, double speed) = 0;
 
   /*
    * Sets the speed of the motors. Speeds are expected to be a 
    * value between -1 and 1.
    */
-
   virtual void setMotorSpeeds(double speedLeft, double speedRight) = 0;
-  /*
-   * Assigns the pins that have the quadrature phase signals.
-   */
 
+  /*
+   * Assigns the motor encoders to use.
+   */
   void setupEncoders(
-    uint8_t leftEncoderPhaseAPin, uint8_t leftEncoderPhaseBPin,
-    uint8_t rightEncoderPhaseAPin, uint8_t rightEncoderPhaseBPin);
+    MotorEncoder* leftMotorEncoder, MotorEncoder* rightMotorEncoder);
+
   /*
    * Reads the value of the given motors encoder.
    */
-
   int32_t readEncoder(Motor motor);
+
   /*
    * Reads the value of the given motors encoder and then resets the
    * value to zero.
    */
-
   int32_t readAndResetEncoder(Motor motor);
 
   /*
@@ -56,8 +61,8 @@ public:
   void writeEncoder(Motor motor, int32_t value);
 
 protected:
-  Encoder* _leftEncoder;
-  Encoder* _rightEncoder;
+  MotorEncoder* _leftEncoder;
+  MotorEncoder* _rightEncoder;
 };
 
 #endif

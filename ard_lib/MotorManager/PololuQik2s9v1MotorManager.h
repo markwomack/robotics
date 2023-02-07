@@ -6,12 +6,16 @@
 #ifndef PololuQik2s9v1MotorManager_h
 #define PololuQik2s9v1MotorManager_h
 
+// Arduino includes
 #include <inttypes.h>
+
+// Dependent includes
 #include <PololuQik.h>
+
+// Local includes
 #include "MotorManager.h"
 
-class PololuQik2s9v1MotorManager : public MotorManager
-{
+class PololuQik2s9v1MotorManager : public MotorManager {
 
 public:
   PololuQik2s9v1MotorManager(uint8_t txPin, uint8_t rxPin, uint8_t resetPin);

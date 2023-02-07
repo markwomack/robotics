@@ -5,37 +5,23 @@
 
 #include "MotorManager.h"
 
-void MotorManager::setupEncoders(
-  uint8_t leftEncoderPhaseAPin, uint8_t leftEncoderPhaseBPin,
-  uint8_t rightEncoderPhaseAPin, uint8_t rightEncoderPhaseBPin)
-{
-  _leftEncoder = new Encoder(leftEncoderPhaseAPin, leftEncoderPhaseBPin);
-  _rightEncoder = new Encoder(rightEncoderPhaseAPin, rightEncoderPhaseBPin);
+void MotorManager::setupEncoders(MotorEncoder* leftMotorEncoder, MotorEncoder* rightMotorEncoder) {
+  _leftEncoder = leftMotorEncoder;
+  _rightEncoder = rightMotorEncoder;
 }
 
-int32_t MotorManager::readEncoder(Motor motor)
-{
-  if (motor == LEFT_MOTOR) {
-    return _leftEncoder->read();
-  } else {
-    return _rightEncoder->read();
-  }
+int32_t MotorManager::readEncoder(Motor motor) {
+  return motor == LEFT_MOTOR ? _leftEncoder->read() : _rightEncoder->read();
 }
 
-int32_t MotorManager::readAndResetEncoder(Motor motor)
-{
-  if (motor == LEFT_MOTOR) {
-    return _leftEncoder->readAndReset();
-  } else {
-    return _rightEncoder->readAndReset();
-  }
+int32_t MotorManager::readAndResetEncoder(Motor motor) {
+  return motor == LEFT_MOTOR ? _leftEncoder->write(0) : _rightEncoder->write(0);
 }
 
-void MotorManager::writeEncoder(Motor motor, int32_t value)
-{
+void MotorManager::writeEncoder(Motor motor, int32_t value) {
   if (motor == LEFT_MOTOR) {
-    return _leftEncoder->write(value);
+    _leftEncoder->write(value);
   } else {
-    return _rightEncoder->write(value);
+    _rightEncoder->write(value);
   }
 }

@@ -7,8 +7,8 @@
 #define MOTORSANDENCODER_H
 
 // My includes
-#include <MotorManager.h>
 #include <PololuQik2s9v1MotorManager.h>
+#include <QuadratureMotorEncoder.h>
 #include <MotorController.h>
 
 // Local includes
@@ -26,9 +26,11 @@ class MotorsAndEncoders {
           POLOLU_QIK_TX_PIN, POLOLU_QIK_RX_PIN, POLOLU_QIK_RESET_PIN);
     
       // Setup encoders on the motor manager
-      _motorManager->setupEncoders(
-        ENCODER_L_PHASE_A_PIN, ENCODER_L_PHASE_B_PIN,
-        ENCODER_R_PHASE_A_PIN, ENCODER_R_PHASE_B_PIN);
+      QuadratureMotorEncoder* leftEncoder = 
+        new QuadratureMotorEncoder(ENCODER_L_PHASE_A_PIN, ENCODER_L_PHASE_B_PIN);
+      QuadratureMotorEncoder* rightEncoder = 
+        new QuadratureMotorEncoder(ENCODER_R_PHASE_A_PIN, ENCODER_R_PHASE_B_PIN);
+      _motorManager->setupEncoders(leftEncoder, rightEncoder);
     
       // Setup the motor controller
       _motorController = new MotorController(_motorManager,
