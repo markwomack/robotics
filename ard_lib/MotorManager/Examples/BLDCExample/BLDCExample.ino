@@ -3,8 +3,8 @@
 // See accompanying LICENSE file for details.
 //
 
-// This is an example of using the PololuQik2s9v1 motor
-// controller with two motors, each with a quadrature motor
+// This is an example of using a basic BLDC motor
+// controller with two motors, each with a three phase motor
 // encoder.
 
 // Arduino includes
@@ -46,27 +46,68 @@ class ExerciseMotorsTask : public Task {
     void start(void) {
       _leftMotorSpeed = 0;
       _rightMotorSpeed = 0;
+      // Allow the motor to spin
       motorManager->setMotorSpeeds(_leftMotorSpeed, _rightMotorSpeed);
       motorManager->writeEncoder(LEFT_MOTOR, 0);
       motorManager->writeEncoder(RIGHT_MOTOR, 0);
+      digitalWrite(M1_BRAKE_PIN, LOW);
+      digitalWrite(M2_BRAKE_PIN, LOW);
+      
       _leftDir = false; // forward
+      _leftBraking = false;
+      _leftLastEncoder = 0;
       _rightDir = true; // reverse
+      _rightBraking = false;
+      _rightLastEncoder = 0;
     };
 
     void update(void) {
-      if (abs(_leftMotorSpeed) >= (double)1.0) {
-        DebugMsgs.debug().println("Switching left direction");
-        _leftDir = !_leftDir;
+      if (!_leftBraking) {
+        if (abs(_leftMotorSpeed) >= 1.0) {
+          DebugMsgs.debug().println("Braking left motor");
+          motorManager->setMotorSpeed(LEFT_MOTOR, 0);
+          digitalWrite(M1_BRAKE_PIN, HIGH);
+          _leftBraking = true;
+          _leftLastEncoder = motorManager->readEncoder(LEFT_MOTOR);
+        } else {
+          _leftMotorSpeed += _leftDir ? -0.1 : 0.1;
+          motorManager->setMotorSpeed(LEFT_MOTOR, _leftMotorSpeed);
+        }
+      } else {
+        int32_t curEncoder = motorManager->readEncoder(LEFT_MOTOR);
+        if (curEncoder - _leftLastEncoder == 0) {
+          DebugMsgs.debug().println("Switching direction left motor");
+          digitalWrite(M1_BRAKE_PIN, LOW);
+          _leftBraking = false;
+          _leftDir = !_leftDir;
+          _leftMotorSpeed = 0;
+        }
+        _leftLastEncoder = curEncoder;
       }
-      if (abs(_rightMotorSpeed) >= (double)1.0) {
-        DebugMsgs.debug().println("Switching right direction");
-        _rightDir = !_rightDir;
-      }
-      _leftMotorSpeed += _leftDir ? -0.1 : 0.1;
-      _rightMotorSpeed += _rightDir ? -0.1 : 0.1;
       
-      motorManager->setMotorSpeeds(_leftMotorSpeed, _rightMotorSpeed);
-
+      if (!_rightBraking) {
+        if (abs(_rightMotorSpeed) >= 1.0) {
+          DebugMsgs.debug().println("Braking right motor");
+          motorManager->setMotorSpeed(RIGHT_MOTOR, 0);
+          digitalWrite(M2_BRAKE_PIN, HIGH);
+          _rightBraking = true;
+          _rightLastEncoder = motorManager->readEncoder(RIGHT_MOTOR);
+        } else {
+          _rightMotorSpeed += _rightDir ? -0.1 : 0.1;
+          motorManager->setMotorSpeed(RIGHT_MOTOR, _rightMotorSpeed);
+        }
+      } else {
+        int32_t curEncoder = motorManager->readEncoder(RIGHT_MOTOR);
+        if (curEncoder - _rightLastEncoder == 0) {
+          DebugMsgs.debug().println("Switching direction right motor");
+          digitalWrite(M2_BRAKE_PIN, LOW);
+          _rightBraking = false;
+          _rightDir = !_rightDir;
+          _rightMotorSpeed = 0;
+        }
+        _rightLastEncoder = curEncoder;
+      }
+      
       DebugMsgs.debug().print("Left speed: ").print(_leftMotorSpeed).print(", Right speed: ").println(_rightMotorSpeed);
       DebugMsgs.debug().print("Left ticks: ").print(motorManager->readEncoder(LEFT_MOTOR)).print(", Right ticks: ").println(motorManager->readEncoder(RIGHT_MOTOR));
     };
@@ -75,13 +116,20 @@ class ExerciseMotorsTask : public Task {
       _leftMotorSpeed = 0;
       _rightMotorSpeed = 0;
       motorManager->setMotorSpeeds(_leftMotorSpeed, _rightMotorSpeed);
+      
+      digitalWrite(M1_BRAKE_PIN, HIGH);
+      digitalWrite(M2_BRAKE_PIN, HIGH);
     };
 
   private:
-    double _leftMotorSpeed;
+    float _leftMotorSpeed;
     bool _leftDir;
-    double _rightMotorSpeed;
+    bool _leftBraking;
+    int32_t _leftLastEncoder;
+    float _rightMotorSpeed;
     bool _rightDir;
+    bool _rightBraking;
+    int32_t _rightLastEncoder;
 };
 ExerciseMotorsTask exerciseMotorsTask;
 
@@ -101,7 +149,7 @@ void setup() {
     new ThreePhaseMotorEncoder(M2_U_SIGNAL_PIN, M2_V_SIGNAL_PIN, M2_W_SIGNAL_PIN);
   motorManager->setupEncoders(leftEncoder, rightEncoder);
 
-  taskManager.addTask(&exerciseMotorsTask, 250);
+  taskManager.addTask(&exerciseMotorsTask, 500);
   
   taskManager.addIdleTask(&idleTask, 100);
   taskManager.addBlinkTask(500);
