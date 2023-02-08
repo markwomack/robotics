@@ -25,6 +25,8 @@ public:
   
 private:
   PololuQik2s9v1* qik;
+  
+  int mapSpeed(double input);
 };
 
 #endif

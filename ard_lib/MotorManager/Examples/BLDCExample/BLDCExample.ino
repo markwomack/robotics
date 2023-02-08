@@ -16,18 +16,23 @@
 #include <BlinkTask.h>
 
 // MotorManager includes
-#include <PololuQik2s9v1MotorManager.h>
-#include <QuadratureMotorEncoder.h>
+#include <BLDCMotorManager.h>
+#include <ThreePhaseMotorEncoder.h>
 
-// Pin Definitions - Defines all of the pins used
-const uint8_t POLOLU_QIK_TX_PIN        =  0; // tx Pololu qik
-const uint8_t POLOLU_QIK_RX_PIN        =  1; // rx Pololu qik
-const uint8_t POLOLU_QIK_RESET_PIN     =  3; // reset Pololu qik
-const uint8_t ENCODER_R_PHASE_B_PIN    = 31; // right encoder phase b signal
-const uint8_t ENCODER_R_PHASE_A_PIN    = 32; // right encoder phase a signal
-const uint8_t BUTTON_PIN               = 33; // start/stop button
-const uint8_t ENCODER_L_PHASE_B_PIN    = 34; // left encoder phase b signal
-const uint8_t ENCODER_L_PHASE_A_PIN    = 35; // left encoder phase a signal
+const uint8_t M1_DIR_PIN(2);
+const uint8_t M1_BRAKE_PIN(3);
+const uint8_t M1_SPEED_PIN(4);
+const uint8_t M1_W_SIGNAL_PIN(5);  // green  - Hc
+const uint8_t M1_V_SIGNAL_PIN(6);  // blue   - Hb
+const uint8_t M1_U_SIGNAL_PIN(7);  // yellow - Ha
+const uint8_t M2_W_SIGNAL_PIN(8);  // green  - Hc
+const uint8_t M2_V_SIGNAL_PIN(9);  // blue   - Hb
+const uint8_t M2_U_SIGNAL_PIN(10); // yellow - Ha
+const uint8_t M2_DIR_PIN(11);
+const uint8_t M2_BRAKE_PIN(12);
+const uint8_t LED_BUILTIN_PIN(13); // Used by TaskManager blink task
+const uint8_t M2_SPEED_PIN(14);
+const uint8_t BUTTON_PIN(15);
 
 // Motor and encoder manager
 MotorManager* motorManager;
@@ -59,7 +64,7 @@ class ExerciseMotorsTask : public Task {
       }
       _leftMotorSpeed += _leftDir ? -0.1 : 0.1;
       _rightMotorSpeed += _rightDir ? -0.1 : 0.1;
-
+      
       motorManager->setMotorSpeeds(_leftMotorSpeed, _rightMotorSpeed);
 
       DebugMsgs.debug().print("Left speed: ").print(_leftMotorSpeed).print(", Right speed: ").println(_rightMotorSpeed);
@@ -86,15 +91,14 @@ void setup() {
   DebugMsgs.enableLevel(DEBUG);
   
   // Setup the motor manager
-  motorManager = 
-    new PololuQik2s9v1MotorManager(
-      POLOLU_QIK_TX_PIN, POLOLU_QIK_RX_PIN, POLOLU_QIK_RESET_PIN);
+  motorManager = new BLDCMotorManager(M1_SPEED_PIN, M1_DIR_PIN, M1_BRAKE_PIN,
+      M2_SPEED_PIN, M2_DIR_PIN, M2_BRAKE_PIN);
 
   // Setup encoders on the motor manager
-  QuadratureMotorEncoder* leftEncoder = 
-    new QuadratureMotorEncoder(ENCODER_L_PHASE_A_PIN, ENCODER_L_PHASE_B_PIN);
-  QuadratureMotorEncoder* rightEncoder = 
-    new QuadratureMotorEncoder(ENCODER_R_PHASE_A_PIN, ENCODER_R_PHASE_B_PIN);
+  ThreePhaseMotorEncoder* leftEncoder = 
+    new ThreePhaseMotorEncoder(M1_U_SIGNAL_PIN, M1_V_SIGNAL_PIN, M1_W_SIGNAL_PIN);
+  ThreePhaseMotorEncoder* rightEncoder = 
+    new ThreePhaseMotorEncoder(M2_U_SIGNAL_PIN, M2_V_SIGNAL_PIN, M2_W_SIGNAL_PIN);
   motorManager->setupEncoders(leftEncoder, rightEncoder);
 
   taskManager.addTask(&exerciseMotorsTask, 250);

@@ -11,7 +11,7 @@ PololuQik2s9v1MotorManager::PololuQik2s9v1MotorManager(
   qik->init(9600);
 }
 
-int mapSpeed(double input)  {
+int PololuQik2s9v1MotorManager::mapSpeed(double input)  {
   // Pin to value between -1 and 1, then multiply by 127
   // for expected qik value.
   return (int)(min(max(input, -1.0), 1.0) * 127);
