@@ -147,10 +147,10 @@ void setup() {
       M2_SPEED_PIN, M2_DIR_PIN, M2_BRAKE_PIN);
 
   // Setup encoders on the motor manager
-  ThreePhaseMotorEncoder* leftEncoder = 
-    new ThreePhaseMotorEncoder(M1_V_SIGNAL_PIN, M1_W_SIGNAL_PIN, M1_U_SIGNAL_PIN);
-  ThreePhaseMotorEncoder* rightEncoder = 
-    new ThreePhaseMotorEncoder(M2_V_SIGNAL_PIN, M2_W_SIGNAL_PIN, M2_U_SIGNAL_PIN);
+  ThreePhaseMotorEncoder* leftEncoder = new ThreePhaseMotorEncoder();
+  leftEncoder->begin(M1_V_SIGNAL_PIN, M1_W_SIGNAL_PIN, M1_U_SIGNAL_PIN);
+  ThreePhaseMotorEncoder* rightEncoder = new ThreePhaseMotorEncoder();
+  rightEncoder->begin(M2_V_SIGNAL_PIN, M2_W_SIGNAL_PIN, M2_U_SIGNAL_PIN);
   motorManager->setupEncoders(leftEncoder, rightEncoder);
 
   taskManager.addTask(&exerciseMotorsTask, 500);
