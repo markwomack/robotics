@@ -12,12 +12,14 @@
 
 class ThreePhaseMotorEncoder : public MotorEncoder {
   public:
-    ThreePhaseMotorEncoder(uint8_t phaseUPin, uint8_t phaseVPin, uint8_t phaseWPin);
+    ThreePhaseMotorEncoder(uint8_t phaseVPin, uint8_t phaseWPin, uint8_t phaseUPin);
   
     int32_t read(void);
     int32_t write(int32_t value);
+    int32_t readFaults(void);
     
   private:
+    void setEncoder(void);
     int _encoderIndex;
 };
 
