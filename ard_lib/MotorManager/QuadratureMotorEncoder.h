@@ -21,6 +21,7 @@ class QuadratureMotorEncoder : public MotorEncoder {
 
     int32_t read(void);
     int32_t write(int32_t value);
+    int32_t readFaults(void);
 
   private:
     Encoder* _encoder;

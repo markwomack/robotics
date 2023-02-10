@@ -56,6 +56,11 @@ public:
   int32_t readAndResetEncoder(Motor motor);
 
   /*
+   * Reads the value of the given motors encoder faults.
+   */
+  int32_t readEncoderFaults(Motor motor);
+
+  /*
    * Sets the value of the given motors encoder to the given value.
    */
   void writeEncoder(Motor motor, int32_t value);

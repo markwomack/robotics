@@ -27,5 +27,10 @@ class MotorEncoder {
      * new value.
      */ 
     virtual int32_t write(int32_t value) = 0;
+
+    /*
+     * Returns the current value of the reported faults
+     */
+    virtual int32_t readFaults(void) = 0;
 };
 #endif // MotorEncoder_h

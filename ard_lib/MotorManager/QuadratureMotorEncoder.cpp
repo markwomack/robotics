@@ -20,3 +20,7 @@ int32_t QuadratureMotorEncoder::write(int32_t value) {
   _encoder->write(value);
   return curValue;
 }
+
+int32_t QuadratureMotorEncoder::readFaults(void) {
+  return 0; // Fault reporting is not supported
+}
