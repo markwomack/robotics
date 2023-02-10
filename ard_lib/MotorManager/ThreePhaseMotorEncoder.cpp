@@ -42,6 +42,10 @@ void ThreePhaseMotorEncoder::begin(const uint8_t phaseVPin, const uint8_t phaseW
     _faultCount = 0;
     _direction = false;
     
+    pinMode(phaseVPin, INPUT_PULLUP);
+    pinMode(phaseWPin, INPUT_PULLUP);
+    pinMode(phaseUPin, INPUT_PULLUP);
+    
     // Read current state of encoders
     _state = (digitalRead(phaseVPin)<<VPOS) + (digitalRead(phaseWPin)<<WPOS) + digitalRead(phaseUPin);
     
