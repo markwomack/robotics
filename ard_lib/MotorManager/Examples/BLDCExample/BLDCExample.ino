@@ -34,7 +34,6 @@ const uint8_t LED_BUILTIN_PIN(13); // Used by TaskManager blink task
 const uint8_t M2_SPEED_PIN(14);
 const uint8_t BUTTON_PIN(15);
 
-
 const float MAX_SPEED(0.1);
 
 // Motor and encoder manager
@@ -67,11 +66,11 @@ class ExerciseMotorsTask : public Task {
     void update(void) {
       if (!_leftBraking) {
         if (abs(_leftMotorSpeed) >= MAX_SPEED) {
-          //DebugMsgs.debug().println("Braking left motor");
-          //motorManager->setMotorSpeed(LEFT_MOTOR, 0);
-          //digitalWrite(M1_BRAKE_PIN, HIGH);
-          //_leftBraking = true;
-          //_leftLastEncoder = motorManager->readEncoder(LEFT_MOTOR);
+          DebugMsgs.debug().println("Braking left motor");
+          motorManager->setMotorSpeed(LEFT_MOTOR, 0);
+          digitalWrite(M1_BRAKE_PIN, HIGH);
+          _leftBraking = true;
+          _leftLastEncoder = motorManager->readEncoder(LEFT_MOTOR);
         } else {
           _leftMotorSpeed += _leftDir ? -0.1 : 0.1;
           motorManager->setMotorSpeed(LEFT_MOTOR, _leftMotorSpeed);
@@ -90,11 +89,11 @@ class ExerciseMotorsTask : public Task {
       
       if (!_rightBraking) {
         if (abs(_rightMotorSpeed) >= MAX_SPEED) {
-          //DebugMsgs.debug().println("Braking right motor");
-          //motorManager->setMotorSpeed(RIGHT_MOTOR, 0);
-          //digitalWrite(M2_BRAKE_PIN, HIGH);
-          //_rightBraking = true;
-          //_rightLastEncoder = motorManager->readEncoder(RIGHT_MOTOR);
+          DebugMsgs.debug().println("Braking right motor");
+          motorManager->setMotorSpeed(RIGHT_MOTOR, 0);
+          digitalWrite(M2_BRAKE_PIN, HIGH);
+          _rightBraking = true;
+          _rightLastEncoder = motorManager->readEncoder(RIGHT_MOTOR);
         } else {
           _rightMotorSpeed += _rightDir ? -0.1 : 0.1;
           motorManager->setMotorSpeed(RIGHT_MOTOR, _rightMotorSpeed);
@@ -147,10 +146,10 @@ void setup() {
       M2_SPEED_PIN, M2_DIR_PIN, M2_BRAKE_PIN);
 
   // Setup encoders on the motor manager
-  ThreePhaseMotorEncoder* leftEncoder = 
-    new ThreePhaseMotorEncoder(M1_V_SIGNAL_PIN, M1_W_SIGNAL_PIN, M1_U_SIGNAL_PIN);
-  ThreePhaseMotorEncoder* rightEncoder = 
-    new ThreePhaseMotorEncoder(M2_V_SIGNAL_PIN, M2_W_SIGNAL_PIN, M2_U_SIGNAL_PIN);
+  ThreePhaseMotorEncoder* leftEncoder = new ThreePhaseMotorEncoder();
+  leftEncoder->begin(M1_V_SIGNAL_PIN, M1_W_SIGNAL_PIN, M1_U_SIGNAL_PIN);
+  ThreePhaseMotorEncoder* rightEncoder = new ThreePhaseMotorEncoder();
+  rightEncoder->begin(M2_V_SIGNAL_PIN, M2_W_SIGNAL_PIN, M2_U_SIGNAL_PIN);
   motorManager->setupEncoders(leftEncoder, rightEncoder);
 
   taskManager.addTask(&exerciseMotorsTask, 500);
