@@ -1,30 +1,14 @@
-/*
- *      Please see the README.md for a full description of this program and
- *      project.
- *
- *      This program is free software; you can redistribute it and/or modify
- *      it under the terms of the GNU General Public License as published by
- *      the Free Software Foundation; either version 2 of the License, or
- *      (at your option) any later version.
- *
- *      This program is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *      GNU General Public License for more details.
- *
- *      You should have received a copy of the GNU General Public License
- *      along with this program; if not, write to the Free Software
- *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- *      MA 02110-1301, USA.
- */
+//
+// Licensed under Apache 2.0 license.
+// See accompanying LICENSE file for details.
+//
 
-// Arduino includes
 #include <Arduino.h>
 
 // Local includes
 #include "MotorController.h"
 
-MotorController::MotorController(MotorManager* motorManager, double Kp, double Ki, double Kd,
+MotorController::MotorController(MotorAndEncoderManager* motorManager, double Kp, double Ki, double Kd,
     unsigned int frequency, double radiansPerTick, double maxRadiansPerSecond) {
   _motorManager = motorManager;
   
@@ -60,8 +44,8 @@ MotorController::MotorController(MotorManager* motorManager, double Kp, double K
 }
 
 void MotorController::start() {
-  _motorManager->readAndResetEncoder(LEFT_MOTOR);
-  _motorManager->readAndResetEncoder(RIGHT_MOTOR);
+  _motorManager->readAndResetEncoder(M0);
+  _motorManager->readAndResetEncoder(M1);
   
   _last_encoder_left = 0;
   _last_encoder_right = 0;
@@ -100,8 +84,8 @@ bool MotorController::adjustSpeeds() {
   
   // Read the current time and encoder values
   unsigned long current_time = millis();
-  long encoder_left = _motorManager->readEncoder(LEFT_MOTOR);
-  long encoder_right = _motorManager->readEncoder(RIGHT_MOTOR);
+  long encoder_left = _motorManager->readEncoder(M0);
+  long encoder_right = _motorManager->readEncoder(M1);
 
   // Calculate the distance traveled since last call, in radians
   double diff_l = static_cast<double>(encoder_left - _last_encoder_left) * _radiansPerTick;
@@ -125,7 +109,7 @@ bool MotorController::adjustSpeeds() {
 
   // If the pids adjusted the motor speeds, apply the new speeds to the motor
   if (changeMotorSpeeds) {
-    _motorManager->setMotorSpeeds(_leftLastSpeed/_maxRadiansPerSecond, _rightLastSpeed/_maxRadiansPerSecond);
+    _motorManager->setMotorSpeeds((float)(_leftLastSpeed/_maxRadiansPerSecond), (float)(_rightLastSpeed/_maxRadiansPerSecond));
   }
 
   // Remember time and encoder values for next time

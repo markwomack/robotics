@@ -10,11 +10,11 @@
 #include <PID_v1.h>
 
 // My includes
-#include <MotorManager.h>
+#include <MotorAndEncoderManager.h>
 
 class MotorController {
   public:
-    MotorController(MotorManager* motorManager, double Kp, double Ki, double Kd, unsigned int frequency,
+    MotorController(MotorAndEncoderManager* motorManager, double Kp, double Ki, double Kd, unsigned int frequency,
       double radiansPerTick, double maxRadiansPerSecond);
     void start();
     bool isRunning();
@@ -48,7 +48,7 @@ class MotorController {
     
     unsigned long _last_encoder_read_time;
     
-    MotorManager* _motorManager;
+    MotorAndEncoderManager* _motorManager;
 };
 
 #endif
