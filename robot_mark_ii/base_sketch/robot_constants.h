@@ -12,7 +12,7 @@
 // These are constants based on the physical build of the robot.
 // Your robot build may vary.
 
- // wheel diameter in meters (31 mm)
+// wheel diameter in meters (31 mm)
 const double WHEEL_DIAM_M = 0.031;
 const double WHEEL_CIRCUMFERENCE_M = PI * WHEEL_DIAM_M; // C=2*pi*r -> C=pi*2r -> C=pi*D
 
