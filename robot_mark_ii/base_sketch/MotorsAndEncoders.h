@@ -16,24 +16,20 @@
 #include "pin_assignments.h"
 #include "robot_constants.h"
 
-const MotorNum LEFT_MOTOR(M0);
-const MotorNum RIGHT_MOTOR(M1);
-
 class MotorsAndEncoders {
   public:
     MotorsAndEncoders() {};
 
     void initialize(void) {
       // Setup the motor manager
-      PololuQik2s9v1MotorManager* pololuMotorManager = new PololuQik2s9v1MotorManager();
-      pololuMotorManager->begin(POLOLU_QIK_TX_PIN, POLOLU_QIK_RX_PIN, POLOLU_QIK_RESET_PIN);
-      _motorManager = (MotorAndEncoderManager*)pololuMotorManager;
+      _motorManager = 
+           new PololuQik2s9v1MotorManager(POLOLU_QIK_TX_PIN, POLOLU_QIK_RX_PIN, POLOLU_QIK_RESET_PIN);
 
       // Setup encoders on the motor manager
-      TeensyQuadratureMotorEncoder* leftEncoder = new TeensyQuadratureMotorEncoder();
-      leftEncoder->begin(ENCODER_L_PHASE_A_PIN, ENCODER_L_PHASE_B_PIN);
-      TeensyQuadratureMotorEncoder* rightEncoder = new TeensyQuadratureMotorEncoder();
-      rightEncoder->begin(ENCODER_R_PHASE_A_PIN, ENCODER_R_PHASE_B_PIN);
+      TeensyQuadratureMotorEncoder* leftEncoder =
+          new TeensyQuadratureMotorEncoder(ENCODER_L_PHASE_A_PIN, ENCODER_L_PHASE_B_PIN);
+      TeensyQuadratureMotorEncoder* rightEncoder =
+          new TeensyQuadratureMotorEncoder(ENCODER_R_PHASE_A_PIN, ENCODER_R_PHASE_B_PIN);
       _motorManager->setEncoders(leftEncoder, rightEncoder);
       
       // Setup the motor controller
@@ -53,8 +49,8 @@ class MotorsAndEncoders {
       _motorManager->readAndResetEncoder(RIGHT_MOTOR);
     };
 
-    int32_t readEncoder(MotorNum motorNum) {
-      return _motorManager->readEncoder(motorNum);
+    int32_t readEncoder(Motor motor) {
+      return _motorManager->readEncoder(motor);
     };
     
     void resetEncoders() {
