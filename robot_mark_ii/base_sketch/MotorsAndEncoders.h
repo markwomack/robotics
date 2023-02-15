@@ -16,6 +16,9 @@
 #include "pin_assignments.h"
 #include "robot_constants.h"
 
+const Motor LEFT_MOTOR(M0);
+const Motor RIGHT_MOTOR(M1);
+
 class MotorsAndEncoders {
   public:
     MotorsAndEncoders() {};
