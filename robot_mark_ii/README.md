@@ -4,7 +4,7 @@ Robot Mark II 'Beatrice'.</p>
 
 * Beatrice is an all-around robot with many different
 sensor sets that allow it to detect table edges, objects that are close by,
-and lines that are place on a table or floor.
+and lines that are placed on a table or floor.
 
 * It is a differential drive robot
 with motor encoders. This means that it has software control for the motor power
