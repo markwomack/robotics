@@ -18,6 +18,12 @@
 
 
 // THIS IS A WORK IN PROGRESS
+enum SurfaceSensorIndex {
+  FL, FR,
+  C0,C1,C2,C3,C4,C5,
+  RL, RR
+};
+
 class SurfaceSensors {
   public:
     SurfaceSensors() {};
@@ -43,52 +49,60 @@ class SurfaceSensors {
         NUM_REAR_SURFACE_SENSORS);
     };
 
+    void calibrate(void) {
+      _frontSurfaceSensors->calibrate();
+      _centerSurfaceSensors->calibrate();
+      _rearSurfaceSensors->calibrate();
+    };
+
+    void read(void) {
+      // read raw sensor values
+      _frontSurfaceSensors->read(_frontSensorValues);
+      _centerSurfaceSensors->read(_centerSensorValues);
+      _rearSurfaceSensors->read(_rearSensorValues);
+    };
+
+    uint16_t value(SurfaceSensorIndex sensor) {
+      switch(sensor) {
+        case FL:
+          return _frontSensorValues[0];
+          
+        case FR:
+          return _frontSensorValues[1];
+          
+        case C0:
+          return _centerSensorValues[0];
+          
+        case C1:
+          return _centerSensorValues[1];
+          
+        case C2:
+          return _centerSensorValues[2];
+          
+        case C3:
+          return _centerSensorValues[3];
+          
+        case C4:
+          return _centerSensorValues[4];
+          
+        case C5:
+          return _centerSensorValues[5];
+
+        case RL:
+          return _rearSensorValues[0];
+          
+        case RR:
+          return _rearSensorValues[1];
+      }
+    };
+
   private:
-    QTRSensors* _centerSurfaceSensors;
     QTRSensors* _frontSurfaceSensors;
+    QTRSensors* _centerSurfaceSensors;
     QTRSensors* _rearSurfaceSensors;
+    uint16_t _frontSensorValues[NUM_FRONT_SURFACE_SENSORS];
+    uint16_t _centerSensorValues[NUM_CENTER_SURFACE_SENSORS];
+    uint16_t _rearSensorValues[NUM_REAR_SURFACE_SENSORS];
 };
-
-/*
- void readSurfaceSensors(void* context) {
-  CallbackContext* callbackContext = ((CallbackContext*)context);
-  
-  callbackContext->frontSurfaceSensors->read(callbackContext->frontSurfaceSensorValues);
-  callbackContext->centerSurfaceSensors->read(callbackContext->centerSurfaceSensorValues);
-  callbackContext->rearSurfaceSensors->read(callbackContext->rearSurfaceSensorValues);
-  
-//  DebugMsgs.print("front: ").print(frontSurfaceSensorValues[0]).print('\t');
-//  DebugMsgs.print(frontSurfaceSensorValues[1]).println();
-//  DebugMsgs.print("center:").print(centerSurfaceSensorValues[0]).print('\t');
-//  DebugMsgs.print(centerSurfaceSensorValues[1]).print('\t');
-//  DebugMsgs.print(centerSurfaceSensorValues[2]).print('\t');
-//  DebugMsgs.print(centerSurfaceSensorValues[3]).print('\t');
-//  DebugMsgs.print(centerSurfaceSensorValues[4]).print('\t');
-//  DebugMsgs.print(centerSurfaceSensorValues[5]).println();
-//  DebugMsgs.print("rear:  ").print(rearSurfaceSensorValues[0]).print('\t');
-//  DebugMsgs.print(rearSurfaceSensorValues[1]).println();
-//  DebugMsgs.println();
-}
-
-void calibrateSurfaceSensors(CallbackContext* context) {
-
-  // 2.5 ms RC read timeout (default) * 10 reads per calibrate() call
-  // = ~25 ms per calibrate() call.
-  // Call calibrate() 400 times to make calibration take about 10 seconds.
-  for (uint16_t i = 0; i < 200; i++)
-  {
-    context->frontSurfaceSensors->calibrate();
-    context->centerSurfaceSensors->calibrate();
-    context->rearSurfaceSensors->calibrate();
-  }
-  
-  for (uint16_t i = 0; i < 200; i++)
-  {
-    context->frontSurfaceSensors->calibrate();
-    context->centerSurfaceSensors->calibrate();
-    context->rearSurfaceSensors->calibrate();
-  }
-}
- */
 
 #endif //SURFACESENSORS_H

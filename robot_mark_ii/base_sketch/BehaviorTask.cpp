@@ -30,7 +30,11 @@ void BehaviorTask::setPixelRing(PixelRing* pixelRing) {
 void BehaviorTask::setSurfaceSensors(SurfaceSensors* surfaceSensors) {
   _surfaceSensors = surfaceSensors;
 }
-    
+
+void BehaviorTask::setTaskToken(uint8_t taskToken) {
+  _taskToken = taskToken;
+}
+
 void BehaviorTask::stopMovement() {
   _movementState = STOPPED;
   _targetTicks = 0;

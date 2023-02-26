@@ -36,6 +36,7 @@ class BehaviorTask : public Task {
     void setMotorsAndEncoders(MotorsAndEncoders* motorsAndEncoders);
     void setPixelRing(PixelRing* pixelRing);
     void setSurfaceSensors(SurfaceSensors* surfaceSensors);
+    void setTaskToken(uint8_t taskToken);
 
     virtual void setup(void) { };
     virtual void start(void) { };
@@ -43,6 +44,7 @@ class BehaviorTask : public Task {
     virtual void stop(void) { };
 
   protected:
+    uint8_t _taskToken;
     EdgeSensors* _edgeSensors;
     DistanceSensors* _distanceSensors;
     MotorsAndEncoders* _motorsAndEncoders;

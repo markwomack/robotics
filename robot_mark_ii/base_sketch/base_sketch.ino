@@ -25,6 +25,7 @@
 #include "StayOnTableTopTask.h"
 #include "PushOffTableTopTask.h"
 #include "AdjustPixelRingTask.h"
+#include "CalibrateSurfaceSensorsTask.h"
 
 // Simple idle task to fade the pixel ring white
 class IdleTask : public AdjustPixelRingTask {
@@ -52,7 +53,8 @@ NetworkHub networkHub;
 
 // Creates the behavior task to be executed
 BehaviorTask* createBehaviorTask(void) {
-  return new PushOffTableTopTask();
+  return new CalibrateSurfaceSensorsTask();
+  //return new PushOffTableTopTask();
   //return new StayOnTableTopTask();
 }
 
@@ -61,7 +63,7 @@ void setup() {
   
   DebugMsgs.disableAll();
   // Uncomment this line to enable debug msgs
-  //DebugMsgs.enableLevel(DEBUG);
+  DebugMsgs.enableLevel(DEBUG);
    
   // Set up remote udp port debugging
   if (UDP_DEBUGGING) {
@@ -98,7 +100,8 @@ void setup() {
   
   // add tasks into the task manager
   taskManager.addIdleTask(&idleTask, 50);
-  taskManager.addTask(behaviorTask, 10);
+  uint8_t behaviorTaskToken = taskManager.addTask(behaviorTask, 10);
+  behaviorTask->setTaskToken(behaviorTaskToken);
 
   // start monitoring the button to start the tasks
   taskManager.startMonitoringButton(BUTTON_PIN, HIGH);

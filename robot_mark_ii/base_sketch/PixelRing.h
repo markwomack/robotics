@@ -17,7 +17,9 @@ enum RingState {
   RING_GREEN_CW,
   RING_RED_CW,
   RING_BLUE_CW,
-  RING_WHITE_FADE
+  RING_GREEN_COUNTDOWN,
+  RING_WHITE_FADE,
+  RING_BLUE_FADE
 };
 
 struct RingColor {

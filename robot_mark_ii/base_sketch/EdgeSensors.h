@@ -32,12 +32,6 @@ class EdgeSensors {
     void read(void) {
       // read raw sensor values
       _sensors->read(_sensorValues);
-
-  //  DebugMsgs.print("FL: ").print(_sensorValues[FL_EDGE] > 200 ? "EDGE" : "TBLE").print("  ");
-  //  DebugMsgs.print("FR: ").println(_sensorValues[FR_EDGE] > 200 ? "EDGE" : "TBLE");
-  //  DebugMsgs.print("RL: ").print(_sensorValues[RL_EDGE] > 200 ? "EDGE" : "TBLE").print("  ");
-  //  DebugMsgs.print("RR: ").println(_sensorValues[RR_EDGE] > 200 ? "EDGE" : "TBLE");
-  //  DebugMsgs.println();
     };
 
     uint16_t value(uint8_t sensor) {
