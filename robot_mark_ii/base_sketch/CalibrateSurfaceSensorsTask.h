@@ -8,14 +8,15 @@
 
 // My includes
 #include "BehaviorTask.h"
-#include "PixelRing.h"
+#include "FollowLineTask.h"
+#include "Animation.h"
 
 class CalibrateSurfaceSensorsTask : public BehaviorTask {
   public:
     CalibrateSurfaceSensorsTask() {};
 
     void start(void) {
-      _pixelRing->changeState(RING_GREEN_COUNTDOWN);
+      _animation->setAnimationState(GREEN_COUNTDOWN);
       _currentMode = FirstPause;
       _count = 0;
     }
@@ -23,8 +24,8 @@ class CalibrateSurfaceSensorsTask : public BehaviorTask {
     void update(void) {
       switch(_currentMode) {
         case FirstPause:
-        case SecondPause:
-          _pixelRing->run();
+        case SecondPause: {
+          _animation->update();
           delay(500);
           _count++;
           if (_count == 16) {
@@ -34,29 +35,48 @@ class CalibrateSurfaceSensorsTask : public BehaviorTask {
               _currentMode = SecondCalibrate;
             }
             _count = 0;
-            _pixelRing->changeState(RING_BLUE_FADE);
+            _animation->setAnimationState(BLUE_FADE);
           }
-          break;
+        }
+        break;
           
         case FirstCalibrate:
-        case SecondCalibrate:
-          _pixelRing->run();
+        case SecondCalibrate: {
+          _animation->update();
           _surfaceSensors->calibrate();
           _count++;
           if (_count == 200) {
             if (_currentMode == FirstCalibrate) {
               _currentMode = SecondPause;
-            _pixelRing->changeState(RING_GREEN_COUNTDOWN);
+            _animation->setAnimationState(GREEN_COUNTDOWN);
             } else {
               _currentMode = Complete;
             }
             _count = 0;
           }
-          break;
+        }
+        break;
           
-        case Complete:
+        case Complete: {
+          taskManager.stop();
           taskManager.removeTask(_taskToken);
-          break;
+          _animation->setAnimationState(OFF);
+          delay(100);
+          _animation->setAnimationState(WHITE_FADE);
+          delay(100);
+          _animation->setAnimationState(OFF);
+          delay(100);
+          _animation->setAnimationState(WHITE_FADE);
+          delay(100);
+          _animation->setAnimationState(OFF);
+          delay(100);
+          _animation->setAnimationState(WHITE_FADE);
+          delay(100);
+          _animation->setAnimationState(OFF);
+          FollowLineTask* followLineTask = new FollowLineTask();
+          taskManager.addTask(followLineTask, 10);
+        }
+        break;
           
         default:
           break;

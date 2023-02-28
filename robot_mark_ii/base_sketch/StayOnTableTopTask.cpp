@@ -11,7 +11,6 @@
 #include "StayOnTableTopTask.h"
 #include "EdgeSensors.h"
 #include "MotorsAndEncoders.h"
-#include "PixelRing.h"
 
 void StayOnTableTopTask::setup(void) {
   _movementState = STOPPED;
@@ -19,12 +18,12 @@ void StayOnTableTopTask::setup(void) {
   // set the stuff into the tasks
   _readEdgeSensorsTask.setEdgeSensors(_edgeSensors);
   _adjustMotorSpeedsTask.setMotorsAndEncoders(_motorsAndEncoders);
-  _adjustPixelRingTask.setPixelRing(_pixelRing);
+  _adjustAnimationTask.setAnimation(_animation);
   
   // register the methods used when running this behavior
   taskManager.addTask(&_readEdgeSensorsTask, 50);
   taskManager.addTask(&_adjustMotorSpeedsTask, 10);
-  taskManager.addTask(&_adjustPixelRingTask, 50);
+  taskManager.addTask(&_adjustAnimationTask, 50);
 }
   
 // Defines the behavior of the robot, a set of states that are cycled

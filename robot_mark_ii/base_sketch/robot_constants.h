@@ -8,6 +8,7 @@
 
 #include <inttypes.h>
 #include <IPAddress.h>
+#include <Adafruit_NeoPixel.h>
 
 // These are constants based on the physical build of the robot.
 // Your robot build may vary.
@@ -83,6 +84,7 @@ const uint16_t EDGE_THRESHOLD(1000);
 
 const uint16_t NUM_PIXELS_ON_RING(16);
 const uint16_t START_PIXEL_INDEX(5);
+const neoPixelType NEOPIXEL_TYPE(NEO_GRBW + NEO_KHZ800);
 
 // Network related constants
 

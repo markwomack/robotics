@@ -9,7 +9,7 @@
 #include "BehaviorTask.h"
 #include "ReadEdgeSensorsTask.h"
 #include "AdjustMotorSpeedsTask.h"
-#include "AdjustPixelRingTask.h"
+#include "AdjustAnimationTask.h"
 
 class StayOnTableTopTask : public BehaviorTask {
 
@@ -23,7 +23,7 @@ class StayOnTableTopTask : public BehaviorTask {
   private:
     ReadEdgeSensorsTask _readEdgeSensorsTask;
     AdjustMotorSpeedsTask _adjustMotorSpeedsTask;
-    AdjustPixelRingTask _adjustPixelRingTask;
+    AdjustAnimationTask _adjustAnimationTask;
 };
 
 

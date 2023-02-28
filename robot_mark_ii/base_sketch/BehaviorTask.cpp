@@ -19,16 +19,16 @@ void BehaviorTask::setDistanceSensors(DistanceSensors* distanceSensors) {
   _distanceSensors = distanceSensors;
 }
 
+void BehaviorTask::setSurfaceSensors(SurfaceSensors* surfaceSensors) {
+  _surfaceSensors = surfaceSensors;
+}
+
 void BehaviorTask::setMotorsAndEncoders(MotorsAndEncoders* motorsAndEncoders) {
   _motorsAndEncoders = motorsAndEncoders;
 }
 
-void BehaviorTask::setPixelRing(PixelRing* pixelRing) {
-  _pixelRing = pixelRing;
-}
-
-void BehaviorTask::setSurfaceSensors(SurfaceSensors* surfaceSensors) {
-  _surfaceSensors = surfaceSensors;
+void BehaviorTask::setAnimation(Animation* animation) {
+  _animation = animation;
 }
 
 void BehaviorTask::setTaskToken(uint8_t taskToken) {
@@ -39,7 +39,7 @@ void BehaviorTask::stopMovement() {
   _movementState = STOPPED;
   _targetTicks = 0;
   _motorsAndEncoders->stopAndResetEncoders();
-  _pixelRing->changeState(RING_WHITE_FADE);
+  _animation->setAnimationState(WHITE_FADE);
   DebugMsgs.println("stopping");
 }
 
@@ -56,7 +56,7 @@ void BehaviorTask::spin(int degrees) {
     DebugMsgs.print("spinning right ");
   }
   DebugMsgs.print(degrees).println(" degrees");
-  _pixelRing->changeState(RING_BLUE_CW);
+  _animation->setAnimationState(BLUE_CW);
 }
 
 void BehaviorTask::spinFast(int degrees) {
@@ -72,14 +72,14 @@ void BehaviorTask::spinFast(int degrees) {
     DebugMsgs.print("spinning fast right ");
   }
   DebugMsgs.print(degrees).println(" degrees");
-  _pixelRing->changeState(RING_BLUE_CW);
+  _animation->setAnimationState(BLUE_CW);
 }
 
 void BehaviorTask::goForward(unsigned int millimeters) {
   _movementState = GOFORWARD;
   _targetTicks = millimeters * TICKS_PER_MM;
   _motorsAndEncoders->setTargetSpeeds(CRUISE_SPEED, CRUISE_SPEED);
-  _pixelRing->changeState(RING_GREEN_CW);
+  _animation->setAnimationState(GREEN_CW);
   DebugMsgs.print("going forward");
   if (_targetTicks != 0) {
     DebugMsgs.print(" ").print(millimeters).print(" mm (")
@@ -93,7 +93,7 @@ void BehaviorTask::goReverse(unsigned int millimeters) {
   _movementState = GOREVERSE;
   _targetTicks = millimeters * -TICKS_PER_MM;
   _motorsAndEncoders->setTargetSpeeds(-CRUISE_SPEED, -CRUISE_SPEED);
-  _pixelRing->changeState(RING_RED_CW);
+  _animation->setAnimationState(RED_CW);
   DebugMsgs.print("going reverse");
   if (_targetTicks != 0) {
     DebugMsgs.print(" ").print(millimeters).print(" mm (")
@@ -106,27 +106,27 @@ void BehaviorTask::goReverse(unsigned int millimeters) {
 void BehaviorTask::turnForwardRight() {
   _movementState = TURN_F_RIGHT;
   _motorsAndEncoders->setTargetSpeeds(0, TURN_SPEED);
-  _pixelRing->changeState(RING_BLUE_CW);
+  _animation->setAnimationState(BLUE_CW);
   DebugMsgs.println("turn forward right");
 }
 
 void BehaviorTask::turnForwardLeft() {
   _movementState = TURN_F_LEFT;
   _motorsAndEncoders->setTargetSpeeds(TURN_SPEED, 0);
-  _pixelRing->changeState(RING_BLUE_CW);
+  _animation->setAnimationState(BLUE_CW);
   DebugMsgs.println("turn forward left");
 }
 
 void BehaviorTask::turnReverseLeft() {
   _movementState = TURN_R_LEFT;
   _motorsAndEncoders->setTargetSpeeds(0, -TURN_SPEED);
-  _pixelRing->changeState(RING_BLUE_CW);
+  _animation->setAnimationState(BLUE_CW);
   DebugMsgs.println("turn reverse left");
 }
 
 void BehaviorTask::turnReverseRight() {
   _movementState = TURN_R_RIGHT;
   _motorsAndEncoders->setTargetSpeeds(-TURN_SPEED, 0);
-  _pixelRing->changeState(RING_BLUE_CW);
+  _animation->setAnimationState(BLUE_CW);
   DebugMsgs.println("turn reverse right");
 }

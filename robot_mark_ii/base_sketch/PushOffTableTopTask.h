@@ -10,7 +10,7 @@
 #include "BehaviorTask.h"
 #include "ReadEdgeSensorsTask.h"
 #include "AdjustMotorSpeedsTask.h"
-#include "AdjustPixelRingTask.h"
+#include "AdjustAnimationTask.h"
 
 enum PushObjectOffTableState {
   SEEKING,
@@ -47,7 +47,7 @@ class PushOffTableTopTask : public BehaviorTask {
 
     ReadEdgeSensorsTask _readEdgeSensorsTask;
     AdjustMotorSpeedsTask _adjustMotorSpeedsTask;
-    AdjustPixelRingTask _adjustPixelRingTask;
+    AdjustAnimationTask _adjustAnimationTask;
     
     void handleSeekingState(void);
     void handleSpinSeekingState(void);

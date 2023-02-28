@@ -19,21 +19,21 @@
 #include "DistanceSensors.h"
 #include "EdgeSensors.h"
 #include "MotorsAndEncoders.h"
-#include "PixelRing.h"
 #include "SurfaceSensors.h"
+#include "Animation.h"
 #include "BehaviorTask.h"
 #include "StayOnTableTopTask.h"
 #include "PushOffTableTopTask.h"
-#include "AdjustPixelRingTask.h"
+#include "AdjustAnimationTask.h"
 #include "CalibrateSurfaceSensorsTask.h"
 
 // Simple idle task to fade the pixel ring white
-class IdleTask : public AdjustPixelRingTask {
+class IdleTask : public AdjustAnimationTask {
   public:
     IdleTask() {};
     
     void start(void) {
-      _pixelRing->changeState(RING_WHITE_FADE);
+      _animation->setAnimationState(WHITE_FADE);
     };
 };
 IdleTask idleTask;
@@ -41,9 +41,9 @@ IdleTask idleTask;
 // All of the sensors, motors, and pixel ring
 EdgeSensors edgeSensors;
 DistanceSensors distanceSensors;
-MotorsAndEncoders motorsAndEncoders;
-PixelRing pixelRing;
 SurfaceSensors surfaceSensors;
+MotorsAndEncoders motorsAndEncoders;
+Animation animation;
 
 // This is the behavior defined for the robot
 BehaviorTask* behaviorTask;
@@ -53,9 +53,9 @@ NetworkHub networkHub;
 
 // Creates the behavior task to be executed
 BehaviorTask* createBehaviorTask(void) {
-  return new CalibrateSurfaceSensorsTask();
+  //return new CalibrateSurfaceSensorsTask();
   //return new PushOffTableTopTask();
-  //return new StayOnTableTopTask();
+  return new StayOnTableTopTask();
 }
 
 void setup() {
@@ -82,9 +82,9 @@ void setup() {
   
   edgeSensors.initialize();
   distanceSensors.initialize();
-  motorsAndEncoders.initialize();
-  pixelRing.initialize();
   surfaceSensors.initialize();
+  motorsAndEncoders.initialize();
+  animation.initialize();
 
   // get the behavior task to execute
   behaviorTask = createBehaviorTask();
@@ -92,11 +92,11 @@ void setup() {
   // set all the sensors and stuff
   behaviorTask->setEdgeSensors(&edgeSensors);
   behaviorTask->setDistanceSensors(&distanceSensors);
-  behaviorTask->setMotorsAndEncoders(&motorsAndEncoders);
-  behaviorTask->setPixelRing(&pixelRing);
   behaviorTask->setSurfaceSensors(&surfaceSensors);
+  behaviorTask->setMotorsAndEncoders(&motorsAndEncoders);
+  behaviorTask->setAnimation(&animation);
 
-  idleTask.setPixelRing(&pixelRing);
+  idleTask.setAnimation(&animation);
   
   // add tasks into the task manager
   taskManager.addIdleTask(&idleTask, 50);

@@ -9,7 +9,15 @@
 #include "BehaviorTask.h"
 
 class FollowLineTask : public BehaviorTask {
+  public:
+    FollowLineTask() {};
 
+    void start(void) {
+      
+    };
+    
+  protected:
+  
 };
 
 #endif // FOLLOWLINETASK_H

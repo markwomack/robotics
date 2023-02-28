@@ -12,9 +12,9 @@
 // Local includes
 #include "EdgeSensors.h"
 #include "DistanceSensors.h"
-#include "MotorsAndEncoders.h"
-#include "PixelRing.h"
 #include "SurfaceSensors.h"
+#include "MotorsAndEncoders.h"
+#include "Animation.h"
 
 enum MovementState {
   STOPPED,
@@ -34,7 +34,7 @@ class BehaviorTask : public Task {
     void setEdgeSensors(EdgeSensors* edgeSensors);
     void setDistanceSensors(DistanceSensors* distanceSensors);
     void setMotorsAndEncoders(MotorsAndEncoders* motorsAndEncoders);
-    void setPixelRing(PixelRing* pixelRing);
+    void setAnimation(Animation* animation);
     void setSurfaceSensors(SurfaceSensors* surfaceSensors);
     void setTaskToken(uint8_t taskToken);
 
@@ -47,9 +47,9 @@ class BehaviorTask : public Task {
     uint8_t _taskToken;
     EdgeSensors* _edgeSensors;
     DistanceSensors* _distanceSensors;
-    MotorsAndEncoders* _motorsAndEncoders;
-    PixelRing* _pixelRing;
     SurfaceSensors* _surfaceSensors;
+    MotorsAndEncoders* _motorsAndEncoders;
+    Animation* _animation;
 
     MovementState _movementState;
     double _targetTicks;
