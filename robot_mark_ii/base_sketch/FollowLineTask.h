@@ -7,17 +7,22 @@
 #define FOLLOWLINETASK_H
 
 #include "BehaviorTask.h"
+#include "AdjustMotorSpeedsTask.h"
+#include "AdjustAnimationTask.h"
+#include "ReadSurfaceSensorsTask.h"
 
 class FollowLineTask : public BehaviorTask {
   public:
     FollowLineTask() {};
 
-    void start(void) {
-      
-    };
+    void setup(void);
+    void start(void);
+    void update(void);
     
   protected:
-  
+    ReadSurfaceSensorsTask _readSurfaceSensorsTask;
+    AdjustMotorSpeedsTask _adjustMotorSpeedsTask;
+    AdjustAnimationTask _adjustAnimationTask;
 };
 
 #endif // FOLLOWLINETASK_H

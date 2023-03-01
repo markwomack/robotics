@@ -16,6 +16,8 @@ class CalibrateSurfaceSensorsTask : public BehaviorTask {
     CalibrateSurfaceSensorsTask() {};
 
     void start(void) {
+      DebugMsgs.debug().println("Calibrating of surface sensors...");
+      _surfaceSensors->resetCalibration();
       _animation->setAnimationState(GREEN_COUNTDOWN);
       _currentMode = FirstPause;
       _count = 0;
@@ -26,7 +28,7 @@ class CalibrateSurfaceSensorsTask : public BehaviorTask {
         case FirstPause:
         case SecondPause: {
           _animation->update();
-          delay(500);
+          delay(200);
           _count++;
           if (_count == 16) {
             if (_currentMode == FirstPause) {
@@ -71,10 +73,65 @@ class CalibrateSurfaceSensorsTask : public BehaviorTask {
           _animation->setAnimationState(WHITE_FADE);
           delay(100);
           _animation->setAnimationState(OFF);
+
+          // print the calibration minimum values measured when emitters were on
+          if (DebugMsgs.isLevelEnabled(DEBUG)) {
+            DebugMsgs.println("Calibration results:");
+            DebugMsgs.println("Minimums:");
+            uint16_t values[NUM_CENTER_SURFACE_SENSORS];
+            _surfaceSensors->getCalibrationMinValues(S_FRONT, values);
+            DebugMsgs.print("");
+            for (int x = 0; x < NUM_FRONT_SURFACE_SENSORS; x++) {
+              DebugMsgs.print(values[x]).print(" ");
+            }
+            DebugMsgs.println();
+            _surfaceSensors->getCalibrationMinValues(S_CENTER, values);
+            DebugMsgs.print("");
+            for (int x = 0; x < NUM_CENTER_SURFACE_SENSORS; x++) {
+              DebugMsgs.print(values[x]).print(" ");
+            }
+            DebugMsgs.println();
+            _surfaceSensors->getCalibrationMinValues(S_REAR, values);
+            DebugMsgs.print("");
+            for (int x = 0; x < NUM_REAR_SURFACE_SENSORS; x++) {
+              DebugMsgs.print(values[x]).print(" ");
+            }
+            DebugMsgs.println();
+            DebugMsgs.println("Maximums:");
+            _surfaceSensors->getCalibrationMaxValues(S_FRONT, values);
+            DebugMsgs.print("");
+            for (int x = 0; x < NUM_FRONT_SURFACE_SENSORS; x++) {
+              DebugMsgs.print(values[x]).print(" ");
+            }
+            DebugMsgs.println();
+            _surfaceSensors->getCalibrationMaxValues(S_CENTER, values);
+            DebugMsgs.print("");
+            for (int x = 0; x < NUM_CENTER_SURFACE_SENSORS; x++) {
+              DebugMsgs.print(values[x]).print(" ");
+            }
+            DebugMsgs.println();
+            _surfaceSensors->getCalibrationMaxValues(S_REAR, values);
+            DebugMsgs.print("");
+            for (int x = 0; x < NUM_REAR_SURFACE_SENSORS; x++) {
+              DebugMsgs.print(values[x]).print(" ");
+            }
+            DebugMsgs.println();
+          }
+
+          DebugMsgs.debug().println("Calibration complete");
           taskManager.stop();
           taskManager.removeTask(_taskToken);
           FollowLineTask* followLineTask = new FollowLineTask();
-          taskManager.addTask(followLineTask, 10);
+
+          // Pass along all of the sensor references
+          followLineTask->setEdgeSensors(_edgeSensors);
+          followLineTask->setDistanceSensors(_distanceSensors);
+          followLineTask->setSurfaceSensors(_surfaceSensors);
+          followLineTask->setMotorsAndEncoders(_motorsAndEncoders);
+          followLineTask->setAnimation(_animation);
+
+          taskManager.addTask(followLineTask, 500);
+          DebugMsgs.debug().println("Ready to follow lines!");
         }
         break;
           

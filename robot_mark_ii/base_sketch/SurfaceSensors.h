@@ -16,8 +16,11 @@
 #include "pin_assignments.h"
 #include "robot_constants.h"
 
-
 // THIS IS A WORK IN PROGRESS
+enum SurfaceSensorGroup {
+  S_FRONT, S_CENTER, S_REAR
+};
+
 enum SurfaceSensorIndex {
   FL, FR,
   C0,C1,C2,C3,C4,C5,
@@ -49,12 +52,6 @@ class SurfaceSensors {
         NUM_REAR_SURFACE_SENSORS);
     };
 
-    void calibrate(void) {
-      _frontSurfaceSensors->calibrate();
-      _centerSurfaceSensors->calibrate();
-      _rearSurfaceSensors->calibrate();
-    };
-
     void read(void) {
       // read raw sensor values
       _frontSurfaceSensors->read(_frontSensorValues);
@@ -62,7 +59,7 @@ class SurfaceSensors {
       _rearSurfaceSensors->read(_rearSensorValues);
     };
 
-    uint16_t value(SurfaceSensorIndex sensor) {
+    uint16_t sensorValue(SurfaceSensorIndex sensor) {
       switch(sensor) {
         case FL:
           return _frontSensorValues[0];
@@ -93,6 +90,75 @@ class SurfaceSensors {
           
         case RR:
           return _rearSensorValues[1];
+      }
+    };
+
+    void getSensorValues(SurfaceSensorGroup sensorGroup, uint16_t* returnValueArray) {
+      switch (sensorGroup) {
+        case S_FRONT: {
+          memcpy(returnValueArray, _frontSensorValues, sizeof(uint16_t) * NUM_FRONT_SURFACE_SENSORS);
+        }
+        break;
+        
+        case S_CENTER: {
+          memcpy(returnValueArray, _centerSensorValues, sizeof(uint16_t) * NUM_CENTER_SURFACE_SENSORS);
+        }
+        break;
+        
+        case S_REAR: {
+          memcpy(returnValueArray, _rearSensorValues, sizeof(uint16_t) * NUM_REAR_SURFACE_SENSORS);
+        }
+        break;
+      }
+    };
+
+    void resetCalibration(void) {
+      _frontSurfaceSensors->resetCalibration();
+      _centerSurfaceSensors->resetCalibration();
+      _rearSurfaceSensors->resetCalibration();
+    };
+    
+    void calibrate(void) {
+      _frontSurfaceSensors->calibrate();
+      _centerSurfaceSensors->calibrate();
+      _rearSurfaceSensors->calibrate();
+    };
+
+    void getCalibrationMinValues(SurfaceSensorGroup sensorGroup, uint16_t* returnValueArray) {
+      switch (sensorGroup) {
+        case S_FRONT: {
+          memcpy(returnValueArray, _frontSurfaceSensors->calibrationOn.minimum, sizeof(uint16_t) * NUM_FRONT_SURFACE_SENSORS);
+        }
+        break;
+        
+        case S_CENTER: {
+          memcpy(returnValueArray, _centerSurfaceSensors->calibrationOn.minimum, sizeof(uint16_t) * NUM_CENTER_SURFACE_SENSORS);
+        }
+        break;
+        
+        case S_REAR: {
+          memcpy(returnValueArray, _rearSurfaceSensors->calibrationOn.minimum, sizeof(uint16_t) * NUM_REAR_SURFACE_SENSORS);
+        }
+        break;
+      }
+    };
+
+    void getCalibrationMaxValues(SurfaceSensorGroup sensorGroup, uint16_t* returnValueArray) {
+      switch (sensorGroup) {
+        case S_FRONT: {
+          memcpy(returnValueArray, _frontSurfaceSensors->calibrationOn.maximum, sizeof(uint16_t) * NUM_FRONT_SURFACE_SENSORS);
+        }
+        break;
+        
+        case S_CENTER: {
+          memcpy(returnValueArray, _centerSurfaceSensors->calibrationOn.maximum, sizeof(uint16_t) * NUM_CENTER_SURFACE_SENSORS);
+        }
+        break;
+        
+        case S_REAR: {
+          memcpy(returnValueArray, _rearSurfaceSensors->calibrationOn.maximum, sizeof(uint16_t) * NUM_REAR_SURFACE_SENSORS);
+        }
+        break;
       }
     };
 
