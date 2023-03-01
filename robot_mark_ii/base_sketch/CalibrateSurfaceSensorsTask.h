@@ -58,21 +58,21 @@ class CalibrateSurfaceSensorsTask : public BehaviorTask {
         break;
           
         case Complete: {
+          _animation->setAnimationState(OFF);
+          delay(100);
+          _animation->setAnimationState(WHITE_FADE);
+          delay(100);
+          _animation->setAnimationState(OFF);
+          delay(100);
+          _animation->setAnimationState(WHITE_FADE);
+          delay(100);
+          _animation->setAnimationState(OFF);
+          delay(100);
+          _animation->setAnimationState(WHITE_FADE);
+          delay(100);
+          _animation->setAnimationState(OFF);
           taskManager.stop();
           taskManager.removeTask(_taskToken);
-          _animation->setAnimationState(OFF);
-          delay(100);
-          _animation->setAnimationState(WHITE_FADE);
-          delay(100);
-          _animation->setAnimationState(OFF);
-          delay(100);
-          _animation->setAnimationState(WHITE_FADE);
-          delay(100);
-          _animation->setAnimationState(OFF);
-          delay(100);
-          _animation->setAnimationState(WHITE_FADE);
-          delay(100);
-          _animation->setAnimationState(OFF);
           FollowLineTask* followLineTask = new FollowLineTask();
           taskManager.addTask(followLineTask, 10);
         }

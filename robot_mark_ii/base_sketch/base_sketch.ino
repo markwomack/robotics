@@ -53,9 +53,9 @@ NetworkHub networkHub;
 
 // Creates the behavior task to be executed
 BehaviorTask* createBehaviorTask(void) {
-  //return new CalibrateSurfaceSensorsTask();
+  return new CalibrateSurfaceSensorsTask();
   //return new PushOffTableTopTask();
-  return new StayOnTableTopTask();
+  //return new StayOnTableTopTask();
 }
 
 void setup() {
@@ -100,8 +100,7 @@ void setup() {
   
   // add tasks into the task manager
   taskManager.addIdleTask(&idleTask, 50);
-  uint8_t behaviorTaskToken = taskManager.addTask(behaviorTask, 10);
-  behaviorTask->setTaskToken(behaviorTaskToken);
+  behaviorTask->setTaskToken(taskManager.addTask(behaviorTask, 10));
 
   // start monitoring the button to start the tasks
   taskManager.startMonitoringButton(BUTTON_PIN, HIGH);
