@@ -15,7 +15,7 @@ The sketches and libraries have dependicies on some third party libraries.
   to communicate state.
 - [Adafruit WiFiNINA](https://github.com/adafruit/WiFiNINA) - WiFi connction used for
   debugging purposes<br/>
-*^ **MUST** use the above version to allow different pin locations
+**^^ MUST ^^** use the above version to allow different pin locations
 - [PID controller](https://github.com/br3ttb/Arduino-PID-Library) - Used to precisely
   control the motor speeds.
 - [PixelRingAnimator](https://github.com/markwomack/PixelRingAnimator) - Provides
