@@ -64,6 +64,7 @@ const double KD(0.0005);
 // are defined for normal cruising speed (forward or reverse), and speed
 // when performing any turn.
 const double CRUISE_SPEED(0.9 * MAX_RADIANS_PER_SECOND); // 90% of max
+const double FOLLOW_SPEED(0.7 * MAX_RADIANS_PER_SECOND); // 70% of max
 const double TURN_SPEED(0.4 * MAX_RADIANS_PER_SECOND); // 40% of max
 const double SPIN_SPEED(0.2 * MAX_RADIANS_PER_SECOND); // 20% of max
 

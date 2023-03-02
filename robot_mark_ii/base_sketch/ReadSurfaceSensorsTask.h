@@ -22,7 +22,7 @@ class ReadSurfaceSensorsTask : public Task {
     
     void update(void) {
       // read raw sensor values
-      _surfaceSensors->read();
+      _surfaceSensors->readCalibrated();
     };
 
   private:

@@ -67,7 +67,9 @@ class MotorsAndEncoders {
     };
       
     void setTargetSpeeds(double speedLeft, double speedRight) {
-      _motorController->start();
+      if (!_motorController->isRunning()) {
+        _motorController->start();
+      }
       _motorController->setDesiredSpeeds(speedLeft, speedRight);
     };
 

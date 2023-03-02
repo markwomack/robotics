@@ -65,11 +65,13 @@ void BehaviorTask::spinFast(int degrees) {
   _animation->setAnimationState(BLUE_CW);
 }
 
-void BehaviorTask::goForward(unsigned int millimeters) {
+void BehaviorTask::goForward(double leftSpeed, double rightSpeed, uint32_t millimeters) {
+  if (_movementState != GOFORWARD) {
+    _animation->setAnimationState(GREEN_CW);
+  }
   _movementState = GOFORWARD;
   _targetTicks = millimeters * TICKS_PER_MM;
-  _motorsAndEncoders->setTargetSpeeds(CRUISE_SPEED, CRUISE_SPEED);
-  _animation->setAnimationState(GREEN_CW);
+  _motorsAndEncoders->setTargetSpeeds(leftSpeed, rightSpeed);
   DebugMsgs.print("going forward");
   if (_targetTicks != 0) {
     DebugMsgs.print(" ").print(millimeters).print(" mm (")
@@ -79,7 +81,11 @@ void BehaviorTask::goForward(unsigned int millimeters) {
   }
 }
 
-void BehaviorTask::goReverse(unsigned int millimeters) {
+void BehaviorTask::goForward(uint32_t millimeters) {
+  goForward(CRUISE_SPEED, CRUISE_SPEED, millimeters);
+}
+
+void BehaviorTask::goReverse(uint32_t millimeters) {
   _movementState = GOREVERSE;
   _targetTicks = millimeters * -TICKS_PER_MM;
   _motorsAndEncoders->setTargetSpeeds(-CRUISE_SPEED, -CRUISE_SPEED);

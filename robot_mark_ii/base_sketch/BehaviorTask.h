@@ -53,8 +53,9 @@ class BehaviorTask : public Task {
     void stopMovement();
     void spin(int degrees);
     void spinFast(int degrees);
-    void goForward(unsigned int millimeters = 0);
-    void goReverse(unsigned int millimeters = 0);
+    void goForward(double leftSpeed, double rightSpeed, uint32_t millimeters = 0);
+    void goForward(uint32_t millimeters = 0);
+    void goReverse(uint32_t millimeters = 0);
     void turnForwardRight();
     void turnForwardLeft();
     void turnReverseLeft();

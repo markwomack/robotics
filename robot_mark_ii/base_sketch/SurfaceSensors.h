@@ -59,6 +59,13 @@ class SurfaceSensors {
       _rearSurfaceSensors->read(_rearSensorValues);
     };
 
+    void readCalibrated(void) {
+      // read raw sensor values
+      _frontSurfaceSensors->readCalibrated(_frontSensorValues);
+      _centerSurfaceSensors->readCalibrated(_centerSensorValues);
+      _rearSurfaceSensors->readCalibrated (_rearSensorValues);
+    }
+
     uint16_t sensorValue(SurfaceSensorIndex sensor) {
       switch(sensor) {
         case FL:

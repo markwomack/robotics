@@ -123,7 +123,7 @@ class CalibrateSurfaceSensorsTask : public BehaviorTask {
           taskManager.removeTask(_taskToken);
           FollowLineTask* followLineTask = new FollowLineTask();
 
-          taskManager.addTask(followLineTask, 500);
+          taskManager.addTask(followLineTask, 100);
           DebugMsgs.debug().println("Ready to follow lines!");
         }
         break;
