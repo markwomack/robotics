@@ -30,12 +30,7 @@ enum MovementState {
 
 class BehaviorTask : public Task {
   public:
-    BehaviorTask() { };
-    void setEdgeSensors(EdgeSensors* edgeSensors);
-    void setDistanceSensors(DistanceSensors* distanceSensors);
-    void setMotorsAndEncoders(MotorsAndEncoders* motorsAndEncoders);
-    void setAnimation(Animation* animation);
-    void setSurfaceSensors(SurfaceSensors* surfaceSensors);
+    BehaviorTask();
     void setTaskToken(uint8_t taskToken);
 
     virtual void setup(void) { };

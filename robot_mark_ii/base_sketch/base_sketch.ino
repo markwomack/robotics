@@ -15,6 +15,7 @@
 
 // Local includes
 #include "pin_assignments.h"
+#include "globals.h"
 #include "NetworkHub.h"
 #include "DistanceSensors.h"
 #include "EdgeSensors.h"
@@ -79,7 +80,9 @@ void setup() {
       DebugMsgs.println("Error connecting to network, debug messages will continue local");
     }
   }
-  
+
+  // These are globals that need to be initialized
+  // before the rest of the program
   edgeSensors.initialize();
   distanceSensors.initialize();
   surfaceSensors.initialize();
@@ -88,13 +91,6 @@ void setup() {
 
   // get the behavior task to execute
   behaviorTask = createBehaviorTask();
-
-  // set all the sensors and stuff
-  behaviorTask->setEdgeSensors(&edgeSensors);
-  behaviorTask->setDistanceSensors(&distanceSensors);
-  behaviorTask->setSurfaceSensors(&surfaceSensors);
-  behaviorTask->setMotorsAndEncoders(&motorsAndEncoders);
-  behaviorTask->setAnimation(&animation);
 
   idleTask.setAnimation(&animation);
   

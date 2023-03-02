@@ -123,13 +123,6 @@ class CalibrateSurfaceSensorsTask : public BehaviorTask {
           taskManager.removeTask(_taskToken);
           FollowLineTask* followLineTask = new FollowLineTask();
 
-          // Pass along all of the sensor references
-          followLineTask->setEdgeSensors(_edgeSensors);
-          followLineTask->setDistanceSensors(_distanceSensors);
-          followLineTask->setSurfaceSensors(_surfaceSensors);
-          followLineTask->setMotorsAndEncoders(_motorsAndEncoders);
-          followLineTask->setAnimation(_animation);
-
           taskManager.addTask(followLineTask, 500);
           DebugMsgs.debug().println("Ready to follow lines!");
         }

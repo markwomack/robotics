@@ -10,25 +10,15 @@
 // Local includes
 #include "BehaviorTask.h"
 #include "robot_constants.h"
+#include "globals.h"
 
-void BehaviorTask::setEdgeSensors(EdgeSensors* edgeSensors) {
-  _edgeSensors = edgeSensors;
-}
-
-void BehaviorTask::setDistanceSensors(DistanceSensors* distanceSensors) {
-  _distanceSensors = distanceSensors;
-}
-
-void BehaviorTask::setSurfaceSensors(SurfaceSensors* surfaceSensors) {
-  _surfaceSensors = surfaceSensors;
-}
-
-void BehaviorTask::setMotorsAndEncoders(MotorsAndEncoders* motorsAndEncoders) {
-  _motorsAndEncoders = motorsAndEncoders;
-}
-
-void BehaviorTask::setAnimation(Animation* animation) {
-  _animation = animation;
+BehaviorTask::BehaviorTask() {
+  // Set members from globals
+  _edgeSensors = &edgeSensors;
+  _distanceSensors = &distanceSensors;
+  _surfaceSensors = &surfaceSensors;
+  _motorsAndEncoders = &motorsAndEncoders;
+  _animation = &animation;
 }
 
 void BehaviorTask::setTaskToken(uint8_t taskToken) {
