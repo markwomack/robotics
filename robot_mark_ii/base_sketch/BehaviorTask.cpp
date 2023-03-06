@@ -33,36 +33,31 @@ void BehaviorTask::stopMovement() {
   DebugMsgs.println("stopping");
 }
 
-void BehaviorTask::spin(int degrees) {
+void BehaviorTask::spin(double spinSpeed, int degrees) {
+  if (_movementState != SPIN_LEFT && _movementState != SPIN_RIGHT) {
+    _animation->setAnimationState(BLUE_CW);
+  }
+  
   _motorsAndEncoders->resetEncoders();
   _targetTicks = abs(degrees) * TICKS_PER_BASE_DEGREE;
   if (degrees < 0) {
     _movementState = SPIN_LEFT;
-    _motorsAndEncoders->setMotorSpeeds(-SPIN_SPEED, SPIN_SPEED);
+    _motorsAndEncoders->setMotorSpeeds(-spinSpeed, spinSpeed);
     DebugMsgs.print("spinning left ");
   } else if (degrees > 0) {
     _movementState = SPIN_RIGHT;
-    _motorsAndEncoders->setMotorSpeeds(SPIN_SPEED, -SPIN_SPEED);
+    _motorsAndEncoders->setMotorSpeeds(spinSpeed, -spinSpeed);
     DebugMsgs.print("spinning right ");
   }
-  DebugMsgs.print(degrees).println(" degrees");
-  _animation->setAnimationState(BLUE_CW);
+  DebugMsgs.print(degrees).print(" degrees at speed ").println(spinSpeed);
+}
+
+void BehaviorTask::spin(int degrees) {
+  spin(SPIN_SPEED, degrees);
 }
 
 void BehaviorTask::spinFast(int degrees) {
-  _motorsAndEncoders->resetEncoders();
-  _targetTicks = abs(degrees) * TICKS_PER_BASE_DEGREE;
-  if (degrees < 0) {
-    _movementState = SPIN_LEFT;
-    _motorsAndEncoders->setMotorSpeeds(-CRUISE_SPEED, CRUISE_SPEED);
-    DebugMsgs.print("spinning fast left ");
-  } else if (degrees > 0) {
-    _movementState = SPIN_RIGHT;
-    _motorsAndEncoders->setMotorSpeeds(CRUISE_SPEED, -CRUISE_SPEED);
-    DebugMsgs.print("spinning fast right ");
-  }
-  DebugMsgs.print(degrees).println(" degrees");
-  _animation->setAnimationState(BLUE_CW);
+  spin(CRUISE_SPEED, degrees);
 }
 
 void BehaviorTask::goForward(double leftSpeed, double rightSpeed, uint32_t millimeters) {
@@ -85,11 +80,14 @@ void BehaviorTask::goForward(uint32_t millimeters) {
   goForward(CRUISE_SPEED, CRUISE_SPEED, millimeters);
 }
 
-void BehaviorTask::goReverse(uint32_t millimeters) {
+void BehaviorTask::goReverse(double leftSpeed, double rightSpeed, uint32_t millimeters) {
+  if (_movementState != GOREVERSE) {
+      _animation->setAnimationState(RED_CW);
+  }
+  
   _movementState = GOREVERSE;
   _targetTicks = millimeters * -TICKS_PER_MM;
   _motorsAndEncoders->setTargetSpeeds(-CRUISE_SPEED, -CRUISE_SPEED);
-  _animation->setAnimationState(RED_CW);
   DebugMsgs.print("going reverse");
   if (_targetTicks != 0) {
     DebugMsgs.print(" ").print(millimeters).print(" mm (")
@@ -97,6 +95,10 @@ void BehaviorTask::goReverse(uint32_t millimeters) {
   } else {
     DebugMsgs.println(", no limit");
   }
+}
+
+void BehaviorTask::goReverse(uint32_t millimeters) {
+  goReverse(-CRUISE_SPEED, -CRUISE_SPEED, millimeters);
 }
 
 void BehaviorTask::turnForwardRight() {

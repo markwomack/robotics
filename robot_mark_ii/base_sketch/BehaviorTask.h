@@ -51,10 +51,12 @@ class BehaviorTask : public Task {
 
     // Shared movement methods
     void stopMovement();
+    void spin(double spinSpeed, int degrees);
     void spin(int degrees);
     void spinFast(int degrees);
     void goForward(double leftSpeed, double rightSpeed, uint32_t millimeters = 0);
     void goForward(uint32_t millimeters = 0);
+    void goReverse(double leftSpeed, double rightSpeed, uint32_t millimeters = 0);
     void goReverse(uint32_t millimeters = 0);
     void turnForwardRight();
     void turnForwardLeft();
