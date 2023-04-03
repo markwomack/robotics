@@ -21,6 +21,11 @@ spacers, connectors, and wires.
 - 1 - [USB C U Shape Adapter](https://www.amazon.com/gp/product/B09ZHFWZR9/)
 - 1 - [Adafruit AirLift ESP32 WIFI Co-Processor](https://www.adafruit.com/product/4201)
 
+Possible touchscreens:
+
+[https://www.waveshare.com/2.13inch-Touch-e-Paper-HAT.htm](https://www.waveshare.com/2.13inch-Touch-e-Paper-HAT.htm)
+[https://www.adafruit.com/product/2478](https://www.adafruit.com/product/2478)
+
 ### Chassis
 
 
