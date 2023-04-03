@@ -24,6 +24,7 @@ spacers, connectors, and wires.
 Possible touchscreens:
 
 [https://www.waveshare.com/2.13inch-Touch-e-Paper-HAT.htm](https://www.waveshare.com/2.13inch-Touch-e-Paper-HAT.htm)
+
 [https://www.adafruit.com/product/2478](https://www.adafruit.com/product/2478)
 
 ### Chassis
